@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Built-By: shivamsinha
+Build-Jdk: 1.6.0_29
+Class-Path: lib/spring-web-3.0.7.RELEASE.jar lib/aopalliance-1.0.jar l
+ ib/spring-beans-3.0.7.RELEASE.jar lib/spring-context-3.0.7.RELEASE.ja
+ r lib/spring-aop-3.0.7.RELEASE.jar lib/spring-core-3.0.7.RELEASE.jar 
+ lib/commons-logging-1.1.1.jar lib/spring-webmvc-3.1.0.RC1.jar lib/spr
+ ing-asm-3.1.0.RC1.jar lib/spring-context-support-3.1.0.RC1.jar lib/sp
+ ring-expression-3.1.0.RC1.jar
+Created-By: Maven Integration for Eclipse
+

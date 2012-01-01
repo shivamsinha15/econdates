@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="orders-ear">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
+        <dependent-module archiveName="econdates-domain-1.0.0-SNAPSHOT.jar" deploy-path="/" handle="module:/resource/econdates-domain/econdates-domain">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="econdates-web-1.0.0-SNAPSHOT.war" deploy-path="/" handle="module:/resource/econdates-web/econdates-web">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-test-3.1.0.RC2.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-test/3.1.0.RC2/spring-test-3.1.0.RC2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="snowdrop-vfs-2.0.1.Final.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/jboss/snowdrop/snowdrop-vfs/2.0.1.Final/snowdrop-vfs-2.0.1.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-web-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-web/2.5.6.SEC01/spring-web-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.1.1.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-beans-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-beans/2.5.6.SEC01/spring-beans-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-context-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-context/2.5.6.SEC01/spring-context-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="aopalliance-1.0.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-core-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-core/2.5.6.SEC01/spring-core-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-webmvc-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-webmvc/2.5.6.SEC01/spring-webmvc-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-context-support-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-context-support/2.5.6.SEC01/spring-context-support-2.5.6.SEC01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cglib-nodep-2.2.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/cglib/cglib-nodep/2.2/cglib-nodep-2.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>
