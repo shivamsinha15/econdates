@@ -9,12 +9,6 @@
 
 	<context:annotation-config />
 
-	<context:component-scan base-package="org.jboss.spring.samples.orders.domain" />
-
-
-	<bean id="localContainerEntityManagerFactorBean"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceXmlLocation" value="META-INF/jpa-persistence.xml" />
-	</bean>
+	
 
 </beans>

@@ -9,10 +9,46 @@
         <dependent-module archiveName="econdates-web-1.0.0-SNAPSHOT.war" deploy-path="/" handle="module:/resource/econdates-web/econdates-web">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="spring-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01.jar">
+        <dependent-module archiveName="spring-core-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-core/3.1.0.RELEASE/spring-core-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-asm-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-asm/3.1.0.RELEASE/spring-asm-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-tx-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-tx/3.1.0.RELEASE/spring-tx-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="aopalliance-1.0.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-aop-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-aop/3.1.0.RELEASE/spring-aop-3.1.0.RELEASE.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="spring-test-3.1.0.RC2.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-test/3.1.0.RC2/spring-test-3.1.0.RC2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-jdbc-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-jdbc/3.1.0.RELEASE/spring-jdbc-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-orm-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-orm/3.1.0.RELEASE/spring-orm-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-data-jpa-1.0.2.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/data/spring-data-jpa/1.0.2.RELEASE/spring-data-jpa-1.0.2.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-data-commons-core-1.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/data/spring-data-commons-core/1.1.0.RELEASE/spring-data-commons-core-1.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api-1.6.1.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jcl-over-slf4j-1.6.1.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="aspectjrt-1.6.8.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/aspectj/aspectjrt/1.6.8/aspectjrt-1.6.8.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="mysql-connector-java-5.1.18.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="snowdrop-vfs-2.0.1.Final.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/jboss/snowdrop/snowdrop-vfs/2.0.1.Final/snowdrop-vfs-2.0.1.Final.jar">
@@ -28,12 +64,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="spring-context-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-context/2.5.6.SEC01/spring-context-2.5.6.SEC01.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="aopalliance-1.0.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="spring-core-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-core/2.5.6.SEC01/spring-core-2.5.6.SEC01.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="spring-webmvc-2.5.6.SEC01.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-webmvc/2.5.6.SEC01/spring-webmvc-2.5.6.SEC01.jar">
