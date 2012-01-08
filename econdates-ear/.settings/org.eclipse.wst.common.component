@@ -24,6 +24,12 @@
         <dependent-module archiveName="spring-aop-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-aop/3.1.0.RELEASE/spring-aop-3.1.0.RELEASE.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="spring-oxm-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-oxm/3.1.0.RELEASE/spring-oxm-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="spring-ws-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-ws/3.1.0.RELEASE/spring-ws-3.1.0.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="spring-test-3.1.0.RC2.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-test/3.1.0.RC2/spring-test-3.1.0.RC2.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -49,6 +55,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="mysql-connector-java-5.1.18.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-lang-2.4.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="snowdrop-vfs-2.0.1.Final.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/jboss/snowdrop/snowdrop-vfs/2.0.1.Final/snowdrop-vfs-2.0.1.Final.jar">
