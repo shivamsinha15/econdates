@@ -1,5 +1,7 @@
 package com.econdates.domain.entities;
 
+import hirondelle.date4j.DateTime;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -67,7 +69,7 @@ public class EdIndicator {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "release_time")
-	private Date releaseTime;
+	private DateTime releaseTime;
 
 	@Column(name = "release_day_of_month")
 	private Integer releaseDayOfMonth;
@@ -120,12 +122,12 @@ public class EdIndicator {
 		this.releaseUrl = releaseUrl;
 	}
 
-	public Date getReleaseTime() {
+	public DateTime getReleaseTime() {
 		return releaseTime;
 	}
 
-	public void setReleaseTime(Date releaseTime) {
-		this.releaseTime = releaseTime;
+	public void setReleaseTime(DateTime dateTime) {
+		this.releaseTime = dateTime;
 	}
 
 	public Integer getReleaseDayOfMonth() {

@@ -1,457 +1,555 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<s:schema xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.xignite.com/services/" elementFormDefault="qualified" targetNamespace="http://www.xignite.com/services/">
-<s:element name="ListCountryCodes">
-<s:complexType/>
-</s:element>
-<s:element name="ListCountryCodesResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ListCountryCodesResult" type="tns:CountryCodes"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:complexType name="CountryCodes">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="CountryCodes" type="tns:ArrayOfCountryCode"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="AbstractEconodayObject" abstract="true">
-<s:complexContent mixed="false">
-<s:extension base="tns:Common"/>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="Common">
-<s:sequence>
-<s:element minOccurs="1" maxOccurs="1" name="Outcome" type="tns:OutcomeTypes"/>
-<s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Identity" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="Delay" type="s:double"/>
-</s:sequence>
-</s:complexType>
-<s:simpleType name="OutcomeTypes">
-<s:restriction base="s:string">
-<s:enumeration value="Success"/>
-<s:enumeration value="SystemError"/>
-<s:enumeration value="RequestError"/>
-<s:enumeration value="RegistrationError"/>
-</s:restriction>
-</s:simpleType>
-<s:complexType name="CountryCode">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="CountryCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="CountryName" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="IsInternational" type="s:boolean"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="ArrayOfCountryCode">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="unbounded" name="CountryCode" nillable="true" type="tns:CountryCode"/>
-</s:sequence>
-</s:complexType>
-<s:element name="Header" type="tns:Header"/>
-<s:complexType name="Header">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Tracer" type="s:string"/>
-</s:sequence>
-<s:anyAttribute/>
-</s:complexType>
-<s:element name="ListEventCodes">
-<s:complexType/>
-</s:element>
-<s:element name="ListEventCodesResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ListEventCodesResult" type="tns:EventCodes"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:complexType name="EventCodes">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventCodes" type="tns:ArrayOfEventCode"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="ArrayOfEventCode">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="unbounded" name="EventCode" nillable="true" type="tns:EventCode"/>
-</s:sequence>
-</s:complexType>
-<s:complexType name="EventCode">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="EventName" type="s:string"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:element name="GetEventDetails">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventID" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventDetailsResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventDetailsResult" type="tns:EventDetails"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:complexType name="EventDetails">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventID" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="EventCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="CountryCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="EventName" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="ReleasedOn" type="s:dateTime"/>
-<s:element minOccurs="0" maxOccurs="1" name="Values" type="tns:ArrayOfEventValue"/>
-<s:element minOccurs="0" maxOccurs="1" name="Definition" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="CountryName" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="IsInternational" type="s:boolean"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedFor" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="ReleasedForStart" type="s:dateTime"/>
-<s:element minOccurs="1" maxOccurs="1" name="ReleasedForEnd" type="s:dateTime"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="ArrayOfEventValue">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="unbounded" name="EventValue" nillable="true" type="tns:EventValue"/>
-</s:sequence>
-</s:complexType>
-<s:complexType name="EventValue">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ValueName" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Consensus" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Actual" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Prefix" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="Suffix" type="s:string"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:element name="GetMultipleEventDetails">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventIDs" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetMultipleEventDetailsResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetMultipleEventDetailsResult" type="tns:MultipleEventDetails"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:complexType name="MultipleEventDetails">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="Details" type="tns:ArrayOfEventDetails"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="ArrayOfEventDetails">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="unbounded" name="EventDetails" nillable="true" type="tns:EventDetails"/>
-</s:sequence>
-</s:complexType>
-<s:element name="GetEventsByCountryCode">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="CountryCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsByCountryCodeResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsByCountryCodeResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:complexType name="EventSummaries">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="Summaries" type="tns:ArrayOfEventSummary"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:complexType name="ArrayOfEventSummary">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="unbounded" name="EventSummary" nillable="true" type="tns:EventSummary"/>
-</s:sequence>
-</s:complexType>
-<s:complexType name="EventSummary">
-<s:complexContent mixed="false">
-<s:extension base="tns:AbstractEconodayObject">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventID" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="EventCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="CountryCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="EventName" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="ReleasedOn" type="s:dateTime"/>
-<s:element minOccurs="0" maxOccurs="1" name="Values" type="tns:ArrayOfEventValue"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:element name="GetMostRecentEventsByEventCode">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventCode" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="Count" type="s:int"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetMostRecentEventsByEventCodeResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetMostRecentEventsByEventCodeResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsByEventCode">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsByEventCodeResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsByEventCodeResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsByEventName">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventName" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsByEventNameResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsByEventNameResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForDate">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ForDate" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForDateResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForDateResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForMonth">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ForDate" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForMonthResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForMonthResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForNextNumberOfDays">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="1" maxOccurs="1" name="NextNumberOfDays" type="s:int"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForNextNumberOfDaysResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForNextNumberOfDaysResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForRange">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForRangeResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForRangeResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForRangeLength">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="NumberOfDays" type="s:int"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForRangeLengthResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForRangeLengthResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForToday">
-<s:complexType/>
-</s:element>
-<s:element name="GetEventsForTodayResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForTodayResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForTomorrow">
-<s:complexType/>
-</s:element>
-<s:element name="GetEventsForTomorrowResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForTomorrowResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForWeek">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ForDate" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsForWeekResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsForWeekResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsReleasedForRange">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedForStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedForEnd" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsReleasedForRangeResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsReleasedForRangeResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsReleasedForRangeLength">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedForStart" type="s:string"/>
-<s:element minOccurs="1" maxOccurs="1" name="NumberOfDays" type="s:int"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetEventsReleasedForRangeLengthResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetEventsReleasedForRangeLengthResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="SearchEvents">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="EventName" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="EventCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="CountryCode" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedForStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedForEnd" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="GetUS" type="s:string"/>
-<s:element minOccurs="0" maxOccurs="1" name="GetInternational" type="s:string"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="SearchEventsResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="SearchEventsResult" type="tns:EventSummaries"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:element name="GetServiceDemonstration">
-<s:complexType/>
-</s:element>
-<s:element name="GetServiceDemonstrationResponse">
-<s:complexType>
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="GetServiceDemonstrationResult" type="tns:DocumentationResult"/>
-</s:sequence>
-</s:complexType>
-</s:element>
-<s:complexType name="DocumentationResult">
-<s:complexContent mixed="false">
-<s:extension base="tns:Common">
-<s:sequence>
-<s:element minOccurs="0" maxOccurs="1" name="Text" type="s:string"/>
-</s:sequence>
-</s:extension>
-</s:complexContent>
-</s:complexType>
-<s:element name="CountryCodes" nillable="true" type="tns:CountryCodes"/>
-<s:element name="EventCodes" nillable="true" type="tns:EventCodes"/>
-<s:element name="EventDetails" nillable="true" type="tns:EventDetails"/>
-<s:element name="MultipleEventDetails" nillable="true" type="tns:MultipleEventDetails"/>
-<s:element name="EventSummaries" nillable="true" type="tns:EventSummaries"/>
-<s:element name="DocumentationResult" nillable="true" type="tns:DocumentationResult"/>
+<s:schema xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.xignite.com/services/"
+	elementFormDefault="qualified" targetNamespace="http://www.xignite.com/services/">
+	<s:element name="ListCountryCodes">
+		<s:complexType />
+	</s:element>
+	<s:element name="ListCountryCodesResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="ListCountryCodesResult" type="tns:CountryCodes" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:complexType name="CountryCodes">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="CountryCodes"
+						type="tns:ArrayOfCountryCode" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="AbstractEconodayObject" abstract="true">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:Common" />
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="Common">
+		<s:sequence>
+			<s:element minOccurs="1" maxOccurs="1" name="Outcome"
+				type="tns:OutcomeTypes" />
+			<s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+			<s:element minOccurs="0" maxOccurs="1" name="Identity"
+				type="s:string" />
+			<s:element minOccurs="1" maxOccurs="1" name="Delay" type="s:double" />
+		</s:sequence>
+	</s:complexType>
+	<s:simpleType name="OutcomeTypes">
+		<s:restriction base="s:string">
+			<s:enumeration value="Success" />
+			<s:enumeration value="SystemError" />
+			<s:enumeration value="RequestError" />
+			<s:enumeration value="RegistrationError" />
+		</s:restriction>
+	</s:simpleType>
+	<s:complexType name="CountryCode">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="CountryCode"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="CountryName"
+						type="s:string" />
+					<s:element minOccurs="1" maxOccurs="1" name="IsInternational"
+						type="s:boolean" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="ArrayOfCountryCode">
+		<s:sequence>
+			<s:element minOccurs="0" maxOccurs="unbounded" name="CountryCode"
+				nillable="true" type="tns:CountryCode" />
+		</s:sequence>
+	</s:complexType>
+	<s:element name="Header" type="tns:Header" />
+	<s:complexType name="Header">
+		<s:sequence>
+			<s:element minOccurs="0" maxOccurs="1" name="Username"
+				type="s:string" />
+			<s:element minOccurs="0" maxOccurs="1" name="Password"
+				type="s:string" />
+			<s:element minOccurs="0" maxOccurs="1" name="Tracer" type="s:string" />
+		</s:sequence>
+		<s:anyAttribute />
+	</s:complexType>
+	<s:element name="ListEventCodes">
+		<s:complexType />
+	</s:element>
+	<s:element name="ListEventCodesResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ListEventCodesResult"
+					type="tns:EventCodes" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:complexType name="EventCodes">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="EventCodes"
+						type="tns:ArrayOfEventCode" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="ArrayOfEventCode">
+		<s:sequence>
+			<s:element minOccurs="0" maxOccurs="unbounded" name="EventCode"
+				nillable="true" type="tns:EventCode" />
+		</s:sequence>
+	</s:complexType>
+	<s:complexType name="EventCode">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="EventCode"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="EventName"
+						type="s:string" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:element name="GetEventDetails">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="EventID"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventDetailsResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="GetEventDetailsResult"
+					type="tns:EventDetails" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:complexType name="EventDetails">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="EventID"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="EventCode"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="CountryCode"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="EventName"
+						type="s:string" />
+					<s:element minOccurs="1" maxOccurs="1" name="ReleasedOn"
+						type="s:dateTime" />
+					<s:element minOccurs="0" maxOccurs="1" name="Values"
+						type="tns:ArrayOfEventValue" />
+					<s:element minOccurs="0" maxOccurs="1" name="Definition"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="Description"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="CountryName"
+						type="s:string" />
+					<s:element minOccurs="1" maxOccurs="1" name="IsInternational"
+						type="s:boolean" />
+					<s:element minOccurs="0" maxOccurs="1" name="ReleasedFor"
+						type="s:string" />
+					<s:element minOccurs="1" maxOccurs="1" name="ReleasedForStart"
+						type="s:dateTime" />
+					<s:element minOccurs="1" maxOccurs="1" name="ReleasedForEnd"
+						type="s:dateTime" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="ArrayOfEventValue">
+		<s:sequence>
+			<s:element minOccurs="0" maxOccurs="unbounded" name="EventValue"
+				nillable="true" type="tns:EventValue" />
+		</s:sequence>
+	</s:complexType>
+	<s:complexType name="EventValue">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="ValueName"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="Consensus"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="Actual"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="Prefix"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="Suffix"
+						type="s:string" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:element name="GetMultipleEventDetails">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="EventIDs"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetMultipleEventDetailsResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetMultipleEventDetailsResult" type="tns:MultipleEventDetails" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:complexType name="MultipleEventDetails">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="Details"
+						type="tns:ArrayOfEventDetails" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="ArrayOfEventDetails">
+		<s:sequence>
+			<s:element minOccurs="0" maxOccurs="unbounded" name="EventDetails"
+				nillable="true" type="tns:EventDetails" />
+		</s:sequence>
+	</s:complexType>
+	<s:element name="GetEventsByCountryCode">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="CountryCode"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsByCountryCodeResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsByCountryCodeResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:complexType name="EventSummaries">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="Summaries"
+						type="tns:ArrayOfEventSummary" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:complexType name="ArrayOfEventSummary">
+		<s:sequence>
+			<s:element minOccurs="0" maxOccurs="unbounded" name="EventSummary"
+				nillable="true" type="tns:EventSummary" />
+		</s:sequence>
+	</s:complexType>
+	<s:complexType name="EventSummary">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:AbstractEconodayObject">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="EventID"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="EventCode"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="CountryCode"
+						type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="EventName"
+						type="s:string" />
+					<s:element minOccurs="1" maxOccurs="1" name="ReleasedOn"
+						type="s:dateTime" />
+					<s:element minOccurs="0" maxOccurs="1" name="Values"
+						type="tns:ArrayOfEventValue" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:element name="GetMostRecentEventsByEventCode">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="EventCode"
+					type="s:string" />
+				<s:element minOccurs="1" maxOccurs="1" name="Count" type="s:int" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetMostRecentEventsByEventCodeResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetMostRecentEventsByEventCodeResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsByEventCode">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="EventCode"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsByEventCodeResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsByEventCodeResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsByEventName">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="EventName"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsByEventNameResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsByEventNameResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForDate">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ForDate"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForDateResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForDateResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForMonth">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ForDate"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForMonthResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForMonthResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForNextNumberOfDays">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="1" maxOccurs="1" name="NextNumberOfDays"
+					type="s:int" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForNextNumberOfDaysResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForNextNumberOfDaysResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForRange">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForRangeResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForRangeResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForRangeLength">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart"
+					type="s:string" />
+				<s:element minOccurs="1" maxOccurs="1" name="NumberOfDays"
+					type="s:int" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForRangeLengthResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForRangeLengthResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForToday">
+		<s:complexType />
+	</s:element>
+	<s:element name="GetEventsForTodayResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForTodayResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForTomorrow">
+		<s:complexType />
+	</s:element>
+	<s:element name="GetEventsForTomorrowResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForTomorrowResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForWeek">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ForDate"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsForWeekResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsForWeekResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsReleasedForRange">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedForStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedForEnd"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsReleasedForRangeResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsReleasedForRangeResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsReleasedForRangeLength">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedForStart"
+					type="s:string" />
+				<s:element minOccurs="1" maxOccurs="1" name="NumberOfDays"
+					type="s:int" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetEventsReleasedForRangeLengthResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetEventsReleasedForRangeLengthResult" type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="SearchEvents">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="EventName"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="EventCode"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="CountryCode"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedForStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedForEnd"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnStart"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="ReleasedOnEnd"
+					type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="GetUS" type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="GetInternational"
+					type="s:string" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="SearchEventsResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="SearchEventsResult"
+					type="tns:EventSummaries" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:element name="GetServiceDemonstration">
+		<s:complexType />
+	</s:element>
+	<s:element name="GetServiceDemonstrationResponse">
+		<s:complexType>
+			<s:sequence>
+				<s:element minOccurs="0" maxOccurs="1"
+					name="GetServiceDemonstrationResult" type="tns:DocumentationResult" />
+			</s:sequence>
+		</s:complexType>
+	</s:element>
+	<s:complexType name="DocumentationResult">
+		<s:complexContent mixed="false">
+			<s:extension base="tns:Common">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="Text" type="s:string" />
+				</s:sequence>
+			</s:extension>
+		</s:complexContent>
+	</s:complexType>
+	<s:element name="CountryCodes" nillable="true" type="tns:CountryCodes" />
+	<s:element name="EventCodes" nillable="true" type="tns:EventCodes" />
+	<s:element name="EventDetails" nillable="true" type="tns:EventDetails" />
+	<s:element name="MultipleEventDetails" nillable="true"
+		type="tns:MultipleEventDetails" />
+	<s:element name="EventSummaries" nillable="true"
+		type="tns:EventSummaries" />
+	<s:element name="DocumentationResult" nillable="true"
+		type="tns:DocumentationResult" />
 </s:schema>

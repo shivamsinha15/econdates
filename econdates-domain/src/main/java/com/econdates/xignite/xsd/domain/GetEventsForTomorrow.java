@@ -34,6 +34,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "")
 @XmlRootElement(name = "GetEventsForTomorrow")
 public class GetEventsForTomorrow {
+	
+	private Header header;
+	
+	public GetEventsForTomorrow(){
+	}
+	
+	public GetEventsForTomorrow(Header header){
+		this.header = header;
+	}
 
 
 }

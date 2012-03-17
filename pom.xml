@@ -37,6 +37,10 @@
 			<id>springsource-milestone</id>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
 	</repositories>
 	<build>
 		<plugins>
