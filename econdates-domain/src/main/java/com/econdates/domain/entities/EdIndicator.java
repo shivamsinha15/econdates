@@ -54,34 +54,43 @@ public class EdIndicator {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "name")
+	@Column(name = "edi_name")
 	private String name;
 
-	@Column(name = "importance")
+	@Column(name = "edi_importance")
 	@Enumerated(EnumType.STRING)
 	private Importance importance;
+	
+	@Column(name = "edi_description", columnDefinition="TEXT")
+	private String description;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "edi_release_time")
+	private DateTime releaseTime;
+	
+	@Column(name = "edi_release_frequency")
+	private Integer releaseFrequency;
+	
+	@Column(name ="edi_release_day_of_week")
+	private Integer releaseDayOfWeek;
+	
+	@Column(name ="edi_release_day_of_month")
+	private Integer releaseDayOfMonth;
+	
+	@Column(name = "release_url")
+	private String releaseUrl;
 	
 	@Column(name = "release_page")
 	private String releasePage;
 
-	@Column(name = "release_url")
-	private String releaseUrl;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "release_time")
-	private DateTime releaseTime;
 
-	@Column(name = "release_day_of_month")
-	private Integer releaseDayOfMonth;
 
-	@Column(name = "release_day_of_week")
-	private Integer releaseDayOfWeek;
 
 	@Column(name = "source_report")
 	private String sourceReport;
 
-	@Column(name = "description")
-	private String description;
+
 
 	@Column(name = "analysis")
 	private String analysis;
@@ -130,13 +139,6 @@ public class EdIndicator {
 		this.releaseTime = dateTime;
 	}
 
-	public Integer getReleaseDayOfMonth() {
-		return releaseDayOfMonth;
-	}
-
-	public void setReleaseDayOfMonth(Integer releaseDayOfMonth) {
-		this.releaseDayOfMonth = releaseDayOfMonth;
-	}
 
 	public String getAnalysis() {
 		return analysis;
@@ -195,6 +197,14 @@ public class EdIndicator {
 
 	public String getReleasePage() {
 		return releasePage;
+	}
+
+	public void setReleaseDayOfMonth(Integer releaseDayOfMonth) {
+		this.releaseDayOfMonth = releaseDayOfMonth;
+	}
+
+	public Integer getReleaseDayOfMonth() {
+		return releaseDayOfMonth;
 	}
 
 }
