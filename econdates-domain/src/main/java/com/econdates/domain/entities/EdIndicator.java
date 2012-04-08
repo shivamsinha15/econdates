@@ -2,7 +2,7 @@ package com.econdates.domain.entities;
 
 import hirondelle.date4j.DateTime;
 
-import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -77,28 +79,27 @@ public class EdIndicator {
 	@Column(name ="edi_release_day_of_month")
 	private Integer releaseDayOfMonth;
 	
-	@Column(name = "release_url")
+	@Column(name = "edi_release_url")
 	private String releaseUrl;
 	
-	@Column(name = "release_page")
+	@Column(name = "edi_release_page")
 	private String releasePage;
-
-
-
-
-
-	@Column(name = "source_report")
+	
+	@Column(name = "edi_source_report")
 	private String sourceReport;
 
-
-
-	@Column(name = "analysis")
-	private String analysis;
-
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
+	@JoinColumn(name = "edi_country_id")
 	private EdCountry edCountry;
-
+	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = EdHistory.TABLE_NAME,
+			joinColumns = @JoinColumn(name="id"),
+			inverseJoinColumns = @JoinColumn(name = "id")
+	)
+    Set<EdHistory> edHistory;
+	
 	public Long getId() {
 		return id;
 	}
@@ -137,15 +138,6 @@ public class EdIndicator {
 
 	public void setReleaseTime(DateTime dateTime) {
 		this.releaseTime = dateTime;
-	}
-
-
-	public String getAnalysis() {
-		return analysis;
-	}
-
-	public void setAnalysis(String analysis) {
-		this.analysis = analysis;
 	}
 
 	public void setSourceReport(String sourceReport) {

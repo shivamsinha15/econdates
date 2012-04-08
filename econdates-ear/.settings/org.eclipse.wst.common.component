@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="orders-ear">
+    <wb-module deploy-name="econdates-ear-1.0.0-SNAPSHOT">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
         <dependent-module archiveName="econdates-domain-1.0.0-SNAPSHOT.jar" deploy-path="/" handle="module:/resource/econdates-domain/econdates-domain">
