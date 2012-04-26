@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+	<persistence-unit name="orders" transaction-type="RESOURCE_LOCAL">
+		<class>org.jboss.spring.samples.orders.domain.entities.User</class>
+		<class>org.jboss.spring.samples.orders.domain.entities.Order</class>
+		<class>org.jboss.spring.samples.orders.domain.entities.OrderItem</class>
+	</persistence-unit>
+    
+	<persistence-unit name="EconDatesDB" transaction-type="RESOURCE_LOCAL">
+		<class>com.econdates.domain.entities.EdCity</class>
+		<class>com.econdates.domain.entities.EdCountry</class>
+		<class>com.econdates.domain.entities.EdHistory</class>
+		<class>com.econdates.domain.entities.EdHoliday</class>
+		<class>com.econdates.domain.entities.EdIndicator</class>
+		<class>com.econdates.domain.entities.EdRegion</class>
+		<class>com.econdates.domain.entities.EdUser</class>
+		<class>com.econdates.domain.entities.EdUserIndicator</class>
+	</persistence-unit>
+</persistence>

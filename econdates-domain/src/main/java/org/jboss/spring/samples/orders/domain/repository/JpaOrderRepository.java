@@ -26,5 +26,6 @@ public class JpaOrderRepository implements OrderRepository {
         q.setParameter(1, user.getId());
         return (List<Order>) q.getResultList();
     }
+    
 
 }

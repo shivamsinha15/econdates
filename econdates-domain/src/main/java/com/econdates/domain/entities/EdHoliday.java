@@ -27,7 +27,7 @@ public class EdHoliday {
 	private Date date;
 
 	@Column(nullable = false, name = "edh_market_close")
-	@Type(type = "numeric_boolean")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean marketClose;
 	
 	@Column(name="edh_market_name")

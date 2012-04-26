@@ -21,39 +21,43 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author: marius
  */
-@ContextConfiguration(locations = {"classpath:application-context.xml", "classpath:test-infrastructure.xml"})
+@ContextConfiguration(locations = { "classpath:application-context.xml",
+		"classpath:test-infrastructure.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JpaOrderDaoTests {
 
-    @Autowired
-    private OrderRepository orderRepository;
+	@Autowired
+	private OrderRepository orderRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @PersistenceContext
-    EntityManager manager;
+	@PersistenceContext
+	EntityManager manager;
 
-    @Before
-    @Transactional
-    public void setUp() {
-        User u = userRepository.getUserById("user1");
-        if (u == null) {
-            User newUser = new User("user1");
-            manager.persist(newUser);
-            Order o = new Order();
-            o.setCreatedBy(newUser);
-            o.setName("A new order");
-            manager.persist(o);
-        }
-    }
+	@Before
+	@Transactional
+	public void setUp() {
+		User u = userRepository.getUserById("user1");
+		if (u == null) {
+			User newUser = new User("user1");
+			manager.persist(newUser);
+			Order o = new Order();
+			o.setCreatedBy(newUser);
+			o.setName("A new order");
+			manager.persist(o);
+		}
+	}
 
-    @Test
-    @Transactional
-    public void testGetOrders() {
-        User u = userRepository.getUserById("user1");
-        Assert.assertNotNull(u);
-        List<Order> orders = orderRepository.getOrdersForUser(u);
-        Assert.assertTrue(orders.size() > 0);
-    }
+	@Test
+	@Transactional
+	public void testGetOrders() {
+		User u = userRepository.getUserById("user1");
+		Assert.assertNotNull(u);
+		List<Order> orders = orderRepository.getOrdersForUser(u);
+		for (Order order : orders) {
+			System.out.println(order.toString());
+		}
+		Assert.assertTrue(orders.size() > 0);
+	}
 }

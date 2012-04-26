@@ -1,7 +1,6 @@
 package com.econdates.domain.entities;
 
-import hirondelle.date4j.DateTime;
-
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -68,7 +67,7 @@ public class EdIndicator {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "edi_release_time")
-	private DateTime releaseTime;
+	private Date releaseTime;
 	
 	@Column(name = "edi_release_frequency")
 	private Integer releaseFrequency;
@@ -93,12 +92,8 @@ public class EdIndicator {
 	private EdCountry edCountry;
 	
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-			name = EdHistory.TABLE_NAME,
-			joinColumns = @JoinColumn(name="id"),
-			inverseJoinColumns = @JoinColumn(name = "id")
-	)
-    Set<EdHistory> edHistory;
+	@JoinColumn(name="id")
+    Set<EdHistory> edHistories;
 	
 	public Long getId() {
 		return id;
@@ -132,11 +127,11 @@ public class EdIndicator {
 		this.releaseUrl = releaseUrl;
 	}
 
-	public DateTime getReleaseTime() {
+	public Date getReleaseTime() {
 		return releaseTime;
 	}
 
-	public void setReleaseTime(DateTime dateTime) {
+	public void setReleaseTime(Date dateTime) {
 		this.releaseTime = dateTime;
 	}
 

@@ -2,10 +2,9 @@ package com.econdates.dataharvesterengine;
 
 import hirondelle.date4j.DateTime;
 
-//Crappy Code, but still worth more than paying >$5000 for SOAP WS for financial data
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -120,7 +119,11 @@ public class ForexPro implements HarvestLocation {
 			if (!eventName.isEmpty() && !eventId.isEmpty()) {
 
 				edIndicator.setName(eventName);
-				edIndicator.setReleaseTime(new DateTime(eventTime));
+				//To Do
+				
+				
+				
+				//edIndicator.setReleaseTime(new DateTime(eventTime));
 				edIndicator.setImportance(getImportanceAsEnum(eventImportance));
 				edIndicator.setReleaseDayOfMonth(day.getDay());
 				edIndicator.setReleaseDayOfWeek(day.getWeekIndex());

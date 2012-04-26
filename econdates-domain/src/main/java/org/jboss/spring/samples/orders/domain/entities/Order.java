@@ -44,4 +44,12 @@ public class Order {
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
+
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", name=" + name + ", createdBy="
+				+ createdBy + "]";
+	}
+    
+    
 }

@@ -9,8 +9,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 //<context:component-scan base-package="org.jboss.spring.samples.orders.domain"/>
 
-@Configuration
-@ComponentScan(basePackages = "org.jboss.spring.samples.orders.domain", excludeFilters = { @ComponentScan.Filter(Configuration.class) })
+//@Configuration
+//@ComponentScan(basePackages = "org.jboss.spring.samples.orders.domain", excludeFilters = { @ComponentScan.Filter(Configuration.class) })
 public class ApplicationConfig {
 
 	// <bean id="localContainerEntityManagerFactorBean"
@@ -19,7 +19,7 @@ public class ApplicationConfig {
 	// value="META-INF/jpa-persistence.xml" />
 	// </bean>
 
-	@Bean
+//	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory
@@ -28,7 +28,7 @@ public class ApplicationConfig {
 
 	}
 
-	@Bean
+//	@Bean
 	public WebServiceClient getWebServiceClient() {
 		return null;
 

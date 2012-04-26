@@ -19,7 +19,7 @@ CREATE TABLE ed_country (
 id INT NOT NULL PRIMARY KEY,
 edc_name VARCHAR(50),
 edc_currency_name VARCHAR(50),
-edc_curreny_code VARCHAR(3),
+edc_currency_code VARCHAR(3),
 edc_mobile_ext VARCHAR(10),
 edc_capital VARCHAR(100),
 edc_map_reference VARCHAR(100),
@@ -33,7 +33,9 @@ edc_iso_3 VARCHAR(10)
 CREATE TABLE ed_region (
 id INT NOT NULL PRIMARY KEY,
 edr_name VARCHAR(100),
-edr_code VARCHAR(2)
+edr_code VARCHAR(2),
+edr_country_id INT,
+FOREIGN KEY (edr_country_id) REFERENCES ed_country(id)
 )
 
 
