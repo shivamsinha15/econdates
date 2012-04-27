@@ -3,16 +3,21 @@ package com.econdates.dataharvesterengine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import hirondelle.date4j.DateTime;
 
 import java.io.IOException;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -23,13 +28,17 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import com.econdates.domain.entities.EdIndicator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DataHarvesterConfig.class, loader = AnnotationConfigContextLoader.class)
+//@ContextConfiguration(classes = DataHarvesterConfig.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(locations = { "classpath:application-testcontext.xml",
+"classpath:test-infrastructure.xml" })
 public class ForexProTest {
+	
+	private final Logger logger = LoggerFactory.getLogger(ForexPro.class);
 
 	@Autowired
 	@Qualifier("forexPro")
 	private HarvestLocation forexPro;
-	
+
 	@Before
 	public void setConnObj() throws IOException {
 		forexPro.setConnObj(ForexPro.BASE_URL);
@@ -51,17 +60,47 @@ public class ForexProTest {
 	public void testisValidConnection() throws IOException {
 		assertTrue(forexPro.isValidConnection(forexPro.getResponse()));
 	}
-	
+
 	@Test
-	public void testIsValidEconomicDocument() throws IOException{
+	public void testIsValidEconomicDocument() throws IOException {
 		assertTrue(forexPro.isValidEconomicDocument(forexPro.getDocument()));
 	}
 	
-	
+	public void testDateFormat() {
+		int year= 2011;
+		int month=2;
+		int dayOfMonth=6;
+		int hourOfDay=0;
+		int minuteOfHour=0;
+		int secondsOfMinute=0;
+		
+		
+		DateTime day = new DateTime(year,month,dayOfMonth,hourOfDay,minuteOfHour,secondsOfMinute, DateTimeZone.forID("Etc/UTC"));
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");;
+		logger.info("Date format test: " + day.toString(fmt));
+		
+		assertEquals("2011-02-06",day.toString(fmt));
+	}
+
 	@Test
-	public void testParseDocumentToRetrieveIndicatorsForAParticulalDay() throws IOException{
-		DateTime day = new DateTime("2011-02-06");
-		List<EdIndicator> indicators = forexPro.getEconomicIndicatorsForSingleDay(day);
+	public void testParseDocumentToRetrieveIndicatorsForAParticulalDay()
+			throws IOException {
+		int year= 2011;
+		int month=2;
+		int dayOfMonth=6;
+		int hourOfDay=0;
+		int minuteOfHour=0;
+		int timezone=0;
+		
+		DateTime day = new DateTime(year,month,dayOfMonth,hourOfDay,minuteOfHour,timezone);
+		List<EdIndicator> indicators = forexPro
+				.getEconomicIndicatorsForSingleDay(day);
+
+		logger.info("INDICATOR SIZE: " + indicators.size());
+		for (EdIndicator edIndicator : indicators) {
+			logger.info(edIndicator.toString());
+		}
+
 	}
 
 }

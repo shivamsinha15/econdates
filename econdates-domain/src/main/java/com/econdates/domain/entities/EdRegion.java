@@ -20,7 +20,7 @@ public class EdRegion {
 
 	@Id
 	@Column(name = "id")
-	private Long id;
+	private long id;
 
 	@Column(name = "edr_country_id")
 	private long countryId;
@@ -32,14 +32,14 @@ public class EdRegion {
 	private String code;
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdCity.class)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "edci_region_id")
 	Collection<EdCity> edCity;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -81,50 +81,4 @@ public class EdRegion {
 				+ name + ", code=" + code + "]";
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + (int) (countryId ^ (countryId >>> 32));
-		result = prime * result + ((edCity == null) ? 0 : edCity.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		EdRegion other = (EdRegion) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		if (countryId != other.countryId)
-			return false;
-		if (edCity == null) {
-			if (other.edCity != null)
-				return false;
-		} else if (!edCity.equals(other.edCity))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
-	}
-
 }

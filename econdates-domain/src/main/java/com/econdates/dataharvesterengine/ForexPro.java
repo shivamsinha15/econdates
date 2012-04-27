@@ -1,13 +1,14 @@
 package com.econdates.dataharvesterengine;
 
-import hirondelle.date4j.DateTime;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -16,17 +17,25 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import com.econdates.domain.entities.EdCountry;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
+import com.econdates.domain.persistance.EdCountryDAO;
 
+@Service
 public class ForexPro implements HarvestLocation {
+
+	@Autowired
+	EdCountryDAO edCountryDAOImpl;
 
 	public static final String BASE_URL = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=filter&elemntsValues=dateFrom%3D2012-2-5%2CdateTo%3D2012-2-11%2Ccurrency%3D29%2Ccurrency%3D25%2Ccurrency%3D54%2Ccurrency%3D145%2Ccurrency%3D34%2Ccurrency%3D32%2Ccurrency%3D70%2Ccurrency%3D6%2Ccurrency%3D27%2Ccurrency%3D37%2Ccurrency%3D122%2Ccurrency%3D113%2Ccurrency%3D55%2Ccurrency%3D24%2Ccurrency%3D59%2Ccurrency%3D72%2Ccurrency%3D71%2Ccurrency%3D22%2Ccurrency%3D17%2Ccurrency%3D51%2Ccurrency%3D39%2Ccurrency%3D93%2Ccurrency%3D14%2Ccurrency%3D48%2Ccurrency%3D33%2Ccurrency%3D23%2Ccurrency%3D10%2Ccurrency%3D35%2Ccurrency%3D92%2Ccurrency%3D68%2Ccurrency%3D42%2Ccurrency%3D7%2Ccurrency%3D105%2Ccurrency%3D21%2Ccurrency%3D43%2Ccurrency%3D60%2Ccurrency%3D87%2Ccurrency%3D125%2Ccurrency%3D45%2Ccurrency%3D53%2Ccurrency%3D38%2Ccurrency%3D56%2Ccurrency%3D52%2Ccurrency%3D36%2Ccurrency%3D110%2Ccurrency%3D11%2Ccurrency%3D26%2Ccurrency%3D9%2Ccurrency%3D12%2Ccurrency%3D46%2Ccurrency%3D41%2Ccurrency%3D202%2Ccurrency%3D63%2Ccurrency%3D61%2Ccurrency%3D143%2Ccurrency%3D4%2Ccurrency%3D5%2Ccurrency%3D138%2Ccurrency%3D178%2CtimeZone%3D55%2Cdst%3Doff&timeFrame=weekly";
 
 	private final Logger logger = LoggerFactory.getLogger(ForexPro.class);
+	private final static int ARRAY_OFFSET = 1;
 	private Connection connObj;
 
 	public boolean isValidConnection(Response response) throws IOException {
@@ -76,8 +85,10 @@ public class ForexPro implements HarvestLocation {
 
 	public List<EdIndicator> getEconomicIndicatorsForSingleDay(DateTime day)
 			throws IOException {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		logger.info("Retriving economic indicators for the date: "
-				+ day.toString());
+				+ day.toString(fmt));
+
 		setConnObj(constructUrlStringForAParticularDay(day));
 		return parseDocumentToRetrieveIndicatorsForAParticularDay(
 				getDocument(), day);
@@ -113,20 +124,23 @@ public class ForexPro implements HarvestLocation {
 
 			if (!eventId.isEmpty() && !eventName.isEmpty()) {
 				getMoreDetailsByEventId(edIndicator, eventId);
+				getHistoricalDetailsByEventId(edIndicator, eventId);
 
 			}
 
 			if (!eventName.isEmpty() && !eventId.isEmpty()) {
 
 				edIndicator.setName(eventName);
-				//To Do
-				
-				
-				
-				//edIndicator.setReleaseTime(new DateTime(eventTime));
+
+				String[] time = eventTime.split(":");
+				int hour = Integer.parseInt(time[0]);
+				int min = Integer.parseInt(time[1]);
+
+				edIndicator.setReleaseTime(new LocalTime(hour, min));
 				edIndicator.setImportance(getImportanceAsEnum(eventImportance));
-				edIndicator.setReleaseDayOfMonth(day.getDay());
-				edIndicator.setReleaseDayOfWeek(day.getWeekIndex());
+
+				edIndicator.setReleaseDayOfMonth(day.getDayOfMonth());
+				edIndicator.setReleaseDayOfWeek(day.getDayOfWeek());
 				edIndicator.setEdCountry(getEdCountry(eventCountry));
 
 				logger.info("Event WebId: " + eventId);
@@ -140,11 +154,48 @@ public class ForexPro implements HarvestLocation {
 				logger.info("Event Previous: " + eventPrevious);
 				logger.info("Event Revised From: " + eventRevisedFrom);
 
+				edIndicatorsForADay.add(edIndicator);
+
 			}
 
 		}
 
-		return null;
+		return edIndicatorsForADay;
+	}
+
+	enum Month {
+		JAN(1), FEB(2), MAR(3), APR(4), MAY(5), JUN(6), JUL(7), AUG(8), SEP(9), OCT(
+				10), NOV(11), DEC(12);
+
+		int month;
+
+		Month(int month) {
+			this.month = month;
+		}
+
+	}
+
+	private void getHistoricalDetailsByEventId(EdIndicator edIndicator,
+			String eventId) throws IOException {
+		setConnObj(constructUrlForEventHistoricalData(eventId));
+		Document moreEventHistoralDetailsDoc = getConnObj().get();
+		Elements moreHistoricalDetailsReleaseDates = moreEventHistoralDetailsDoc
+				.select("td[class*=left]");
+
+		for (Element element : moreHistoricalDetailsReleaseDates) {
+			String releaseDate = element.text().trim().replaceAll("\u00A0", "")
+					.replaceAll(" ", "");
+			if (!releaseDate.isEmpty()) {
+				logger.info("Release Date : " + releaseDate);
+				String[] releaseDateAsArray = releaseDate.split("\\.");
+				String month = releaseDateAsArray[0].toUpperCase();
+				int monthAsInt = Month.valueOf(month).ordinal() + ARRAY_OFFSET;
+				int day = Integer.parseInt(releaseDateAsArray[1].split(",")[0]);
+				int year = Integer
+						.parseInt(releaseDateAsArray[1].split(",")[0]);
+			}
+		}
+
 	}
 
 	private EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,
@@ -177,8 +228,7 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	private EdCountry getEdCountry(String eventCountry) {
-		// TODO Auto-generated method stub
-		return null;
+		return edCountryDAOImpl.findByName(eventCountry);
 	}
 
 	private String getEventIdAsString(String eventId) {
@@ -197,10 +247,11 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	private String constructUrlStringForAParticularDay(DateTime day) {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		String urlForDate = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=filter&elemntsValues=dateFrom%3D"
-				+ day.toString()
+				+ day.toString(fmt)
 				+ "%2CdateTo%3D"
-				+ day.toString()
+				+ day.toString(fmt)
 				+ "%2Ccurrency%3D29%2Ccurrency%3D25%2Ccurrency%3D54%2Ccurrency%3D145%2Ccurrency%3D34%2Ccurrency%3D32%2Ccurrency%3D70%2Ccurrency%3D6%2Ccurrency%3D27%2Ccurrency%3D37%2Ccurrency%3D122%2Ccurrency%3D113%2Ccurrency%3D55%2Ccurrency%3D24%2Ccurrency%3D59%2Ccurrency%3D72%2Ccurrency%3D71%2Ccurrency%3D22%2Ccurrency%3D17%2Ccurrency%3D51%2Ccurrency%3D39%2Ccurrency%3D93%2Ccurrency%3D14%2Ccurrency%3D48%2Ccurrency%3D33%2Ccurrency%3D23%2Ccurrency%3D10%2Ccurrency%3D35%2Ccurrency%3D92%2Ccurrency%3D68%2Ccurrency%3D42%2Ccurrency%3D7%2Ccurrency%3D105%2Ccurrency%3D21%2Ccurrency%3D43%2Ccurrency%3D60%2Ccurrency%3D87%2Ccurrency%3D125%2Ccurrency%3D45%2Ccurrency%3D53%2Ccurrency%3D38%2Ccurrency%3D56%2Ccurrency%3D52%2Ccurrency%3D36%2Ccurrency%3D110%2Ccurrency%3D11%2Ccurrency%3D26%2Ccurrency%3D9%2Ccurrency%3D12%2Ccurrency%3D46%2Ccurrency%3D41%2Ccurrency%3D202%2Ccurrency%3D63%2Ccurrency%3D61%2Ccurrency%3D143%2Ccurrency%3D4%2Ccurrency%3D5%2Ccurrency%3D138%2Ccurrency%3D178%2CtimeZone%3D55%2Cdst%3Doff&timeFrame=weekly";
 		logger.info("Url String for a single day: " + urlForDate);
 		return urlForDate;
@@ -209,7 +260,16 @@ public class ForexPro implements HarvestLocation {
 	private String constructUrlForMoreEventDetails(String id) {
 		String urlForEventDetail = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreDetails&eventID="
 				+ id;
+		logger.info("Url for more details: " + urlForEventDetail);
 		return urlForEventDetail;
+	}
+
+	private String constructUrlForEventHistoricalData(String id) {
+		String urlForHistoricalEventDetail = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreEventDetails&eventID="
+				+ id + "&type=moreHistory&chartSize=605%20HTTP/1.1";
+		logger.info("Url for historical details: "
+				+ urlForHistoricalEventDetail);
+		return urlForHistoricalEventDetail;
 	}
 
 	public Connection getConnObj() {

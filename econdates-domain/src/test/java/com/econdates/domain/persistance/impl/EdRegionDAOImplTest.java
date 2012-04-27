@@ -49,6 +49,7 @@ public class EdRegionDAOImplTest {
 				.size());
 	}
 
+	@Test
 	public void testFindID() {
 		EdRegion edStateNSW = edRegionDAOImpl.findById(NSW_STATE_ID);
 		assertEquals(STATE_NAME, edStateNSW.getName());

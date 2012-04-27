@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,6 +20,7 @@ import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.joda.time.LocalTime;
 
 /**
  * Entity representing a economic indicator
@@ -61,40 +61,43 @@ public class EdIndicator {
 	@Column(name = "edi_importance")
 	@Enumerated(EnumType.STRING)
 	private Importance importance;
-	
-	@Column(name = "edi_description", columnDefinition="TEXT")
+
+	@Column(name = "edi_description", columnDefinition = "TEXT")
 	private String description;
-	
-	@Temporal(TemporalType.TIMESTAMP)
+
 	@Column(name = "edi_release_time")
-	private Date releaseTime;
-	
+	private LocalTime releaseTime;
+
 	@Column(name = "edi_release_frequency")
 	private Integer releaseFrequency;
-	
-	@Column(name ="edi_release_day_of_week")
+
+	@Column(name = "edi_release_day_of_week")
 	private Integer releaseDayOfWeek;
-	
-	@Column(name ="edi_release_day_of_month")
+
+	@Column(name = "edi_release_day_of_month")
 	private Integer releaseDayOfMonth;
-	
+
 	@Column(name = "edi_release_url")
 	private String releaseUrl;
-	
+
 	@Column(name = "edi_release_page")
 	private String releasePage;
-	
+
 	@Column(name = "edi_source_report")
 	private String sourceReport;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "edi_last_updated")
+	private Date lastUpdated;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "edi_country_id")
 	private EdCountry edCountry;
-	
+
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="id")
-    Set<EdHistory> edHistories;
-	
+	@JoinColumn(name = "edh_indicator_id")
+	Set<EdHistory> edHistories;
+
 	public Long getId() {
 		return id;
 	}
@@ -127,12 +130,12 @@ public class EdIndicator {
 		this.releaseUrl = releaseUrl;
 	}
 
-	public Date getReleaseTime() {
+	public LocalTime getReleaseTime() {
 		return releaseTime;
 	}
 
-	public void setReleaseTime(Date dateTime) {
-		this.releaseTime = dateTime;
+	public void setReleaseTime(LocalTime releaseTime) {
+		this.releaseTime = releaseTime;
 	}
 
 	public void setSourceReport(String sourceReport) {
@@ -193,5 +196,21 @@ public class EdIndicator {
 	public Integer getReleaseDayOfMonth() {
 		return releaseDayOfMonth;
 	}
+	
+
+
+	@Override
+	public String toString() {
+		return "EdIndicator [id=" + id + ",\n name=" + name + ",\n importance="
+				+ importance + ",\n description=" + description
+				+ ",\n releaseTime=" + releaseTime + ",\n releaseFrequency="
+				+ releaseFrequency + ",\n releaseDayOfWeek=" + releaseDayOfWeek
+				+ ",\n releaseDayOfMonth=" + releaseDayOfMonth
+				+ ",\n releaseUrl=" + releaseUrl + ",\n releasePage="
+				+ releasePage + ",\n sourceReport=" + sourceReport
+				+ ",\n edCountry=" + edCountry.getCountryName() + ",\n edHistories="
+				+ edHistories + "]";
+	}
+	
 
 }

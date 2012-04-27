@@ -9,7 +9,7 @@
         <dependent-module archiveName="econdates-web-1.0.0-SNAPSHOT.war" deploy-path="/" handle="module:/resource/econdates-web/econdates-web">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="date4j-1.2.0.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/date4j/date4j/1.2.0/date4j-1.2.0.jar">
+        <dependent-module archiveName="joda-time-2.1.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/joda-time/joda-time/2.1/joda-time-2.1.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="spring-core-3.1.0.RELEASE.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/springframework/spring-core/3.1.0.RELEASE/spring-core-3.1.0.RELEASE.jar">
@@ -78,7 +78,7 @@
         <dependent-module archiveName="jcl-over-slf4j-1.6.1.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="mysql-connector-java-5.1.18.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar">
+        <dependent-module archiveName="mysql-connector-java-5.1.19.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/mysql/mysql-connector-java/5.1.19/mysql-connector-java-5.1.19.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="commons-lang-2.4.jar" deploy-path="/lib/" handle="module:/classpath/var/M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar">

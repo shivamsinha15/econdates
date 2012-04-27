@@ -80,7 +80,7 @@ public class ImportStaticDataImpl implements ImportStaticData {
 		for (int row = 1; row <= TOTAL_COUNTRIES; row++) {
 			EdCountry edCountry = new EdCountry();
 
-			edCountry.setId(Long.parseLong(edCountryDataSheet.getCell(
+			edCountry.setId(Integer.parseInt(edCountryDataSheet.getCell(
 					COUNTRY_COL_ID, row).getContents().trim()));
 			edCountry.setCountryName(edCountryDataSheet.getCell(
 					COUNTRY_COL_NAME, row).getContents().trim());
@@ -119,7 +119,7 @@ public class ImportStaticDataImpl implements ImportStaticData {
 			EdRegion edRegion = new EdRegion();
 			edRegion.setId(Long.parseLong(edRegionDataSheet.getCell(
 					REGION_COL_ID, row).getContents().trim()));
-			edRegion.setCountryId(Long.parseLong(edRegionDataSheet.getCell(
+			edRegion.setCountryId(Integer.parseInt(edRegionDataSheet.getCell(
 					REGION_COUNTRY_ID, row).getContents().trim()));
 			edRegion.setName(edRegionDataSheet.getCell(REGION_NAME, row)
 					.getContents().trim());

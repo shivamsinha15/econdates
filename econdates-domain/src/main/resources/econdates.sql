@@ -30,6 +30,7 @@ edc_iso_2 VARCHAR(10),
 edc_iso_3 VARCHAR(10)
 )
 
+
 CREATE TABLE ed_region (
 id INT NOT NULL PRIMARY KEY,
 edr_name VARCHAR(100),
@@ -87,7 +88,7 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 edi_name VARCHAR(255),
 edi_importance ENUM("High", "Low", "Medium"),
 edi_description TEXT,
-edi_release_time TIMESTAMP,
+edi_release_time TIME,
 edi_release_frequency INT,
 edi_release_day_of_week INT,
 edi_release_day_of_month INT,
@@ -98,6 +99,18 @@ edi_last_updated TIMESTAMP NOT NULL,
 edi_country_id INT,
 FOREIGN KEY (edi_country_id) REFERENCES ed_country (id)
 )
+
+CREATE TABLE ed_history (
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+edh_actual VARCHAR(50),
+edh_consensus VARCHAR(50),
+edh_revised VARCHAR(50),
+edh_analysis TEXT, 
+edh_release_date TIMESTAMP,
+edh_indicator_id INT,
+FOREIGN KEY (edh_indicator_id) REFERENCES ed_indicator (id) ON DELETE CASCADE
+)
+
 
 CREATE TABLE ed_indicator_publication (
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -128,16 +141,6 @@ edup_vote TINYINT SIGNED DEFAULT 0,
 edup_favourite BOOLEAN,
 CONSTRAINT FOREIGN KEY (edup_user_id) REFERENCES ed_user (id),
 CONSTRAINT FOREIGN KEY (edup_publication_id) REFERENCES ed_publication (id)
-)
-
-CREATE TABLE ed_history (
-id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-edh_actual VARCHAR(50),
-edh_consensus VARCHAR(50),
-edh_revised VARCHAR(50),
-edh_analysis TEXT, 
-edh_indicator_id INT,
-FOREIGN KEY (edh_indicator_id) REFERENCES ed_indicator (id)
 )
 
 

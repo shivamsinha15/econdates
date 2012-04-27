@@ -19,11 +19,11 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--Date4J util -->
+		<!--joda time -->
 		<dependency>
-			<groupId>date4j</groupId>
-			<artifactId>date4j</artifactId>
-			<version>1.2.0</version>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.1</version>
 		</dependency>
 
 		<!--Spring -->
@@ -220,7 +220,7 @@
 		<jaxb-api.version>2.2.6</jaxb-api.version>
 
 		<!-- VERSIONS - persistence -->
-		<mysql-connector-java.version>5.1.18</mysql-connector-java.version> <!-- latest version on: 02.10.2011 - http://dev.mysql.com/downloads/connector/j/ -->
+		<mysql-connector-java.version>5.1.19</mysql-connector-java.version> <!-- latest version on: 02.10.2011 - http://dev.mysql.com/downloads/connector/j/ -->
 		<hibernate.version>4.0.0.Final</hibernate.version> <!-- 3.6.9.Final -->
 		<commons-dbcp.version>1.4</commons-dbcp.version>
 

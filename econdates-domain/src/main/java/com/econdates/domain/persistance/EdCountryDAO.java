@@ -14,5 +14,7 @@ public interface EdCountryDAO extends GenericDAO<EdCountry> {
 	void mergeCollection(Collection<EdCountry> edCountries);
 
 	void persistCollection(Collection<EdCountry> edCountries);
+	
+	EdCountry findByName(String countryName);
 
 }

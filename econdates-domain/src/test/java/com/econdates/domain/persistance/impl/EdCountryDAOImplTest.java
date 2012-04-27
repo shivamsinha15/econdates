@@ -51,4 +51,10 @@ public class EdCountryDAOImplTest {
 		assertEquals(COUNTRY_NAME, edAustralia.getCountryName());
 	}
 
+	@Test
+	public void testFindByName() {
+		EdCountry edAustralia = edCountryDAOImpl.findByName(COUNTRY_NAME);
+		assertEquals(COUNTRY_NAME, edAustralia.getCountryName());
+	}
+
 }

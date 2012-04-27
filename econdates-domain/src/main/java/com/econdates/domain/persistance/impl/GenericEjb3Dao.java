@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.econdates.domain.persistance.GenericDAO;
@@ -95,7 +96,7 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 		}
 	}
 	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void merge(T entity){
 		entityManager.merge(entity);
 		entityManager.flush();

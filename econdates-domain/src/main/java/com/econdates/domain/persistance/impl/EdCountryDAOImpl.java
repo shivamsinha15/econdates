@@ -13,11 +13,16 @@ import com.econdates.domain.persistance.EdCountryDAO;
 @Repository
 public class EdCountryDAOImpl extends GenericEjb3DAO<EdCountry> implements
 		EdCountryDAO {
-
+	
 	@SuppressWarnings("unchecked")
 	public List<EdCountry> findAll() {
 		return entityManager.createQuery(
 				"from " + getEntityBeanType().getName()).getResultList();
+	}
+	
+	public EdCountry findByName(String countryName) {
+		return  (EdCountry) entityManager.createQuery(
+				"from " + getEntityBeanType().getName() + " e WHERE e.countryName='" +countryName + "'").getSingleResult();
 	}
 
 	@Override
