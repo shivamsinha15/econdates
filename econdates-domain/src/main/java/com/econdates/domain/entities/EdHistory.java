@@ -42,9 +42,72 @@ public class EdHistory {
 	@Temporal(TemporalType.DATE)
 	private Date releaseDate;
 	
+	@Column(name = "edh_pervious")
+	private String pervious;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "edh_indicator_id")
 	private EdIndicator edIndicator;
+	
+	public String getActual() {
+		return actual;
+	}
+
+	public void setActual(String actual) {
+		this.actual = actual;
+	}
+
+	public String getConsensus() {
+		return consensus;
+	}
+
+	public void setConsensus(String consensus) {
+		this.consensus = consensus;
+	}
+
+	public String getRevised() {
+		return revised;
+	}
+
+	public void setRevised(String revised) {
+		this.revised = revised;
+	}
+
+	public String getAnalysis() {
+		return analysis;
+	}
+
+	public void setAnalysis(String analysis) {
+		this.analysis = analysis;
+	}
+
+	public Date getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(Date releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public EdIndicator getEdIndicator() {
+		return edIndicator;
+	}
+
+	public void setEdIndicator(EdIndicator edIndicator) {
+		this.edIndicator = edIndicator;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getPervious() {
+		return pervious;
+	}
+
+	public void setPervious(String pervious) {
+		this.pervious = pervious;
+	}
 	
 
 }

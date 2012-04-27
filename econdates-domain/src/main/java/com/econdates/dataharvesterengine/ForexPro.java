@@ -2,10 +2,12 @@ package com.econdates.dataharvesterengine;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.econdates.domain.entities.EdCountry;
+import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.persistance.EdCountryDAO;
@@ -94,7 +97,7 @@ public class ForexPro implements HarvestLocation {
 				getDocument(), day);
 	}
 
-	private List<EdIndicator> parseDocumentToRetrieveIndicatorsForAParticularDay(
+	List<EdIndicator> parseDocumentToRetrieveIndicatorsForAParticularDay(
 			Document document, DateTime day) throws IOException {
 		Elements indicatorDetails = document.select("tr[id*=eventRowId]");
 
@@ -115,7 +118,12 @@ public class ForexPro implements HarvestLocation {
 					.select("span[title]");
 			String eventImportance = elem.select("td[id*=eventImportance]")
 					.select("span[title]").attr("title");
+
 			String eventName = elem.select("td[id*=eventName]").text();
+
+			// More history details does not contain the most recent
+			// announcement hence need to also add the following to the history
+			// (if its not already in there)
 			String eventActual = elem.select("td[id*=eventActual]").text();
 			String eventForecast = elem.select("td[id*=eventForecast]").text();
 			String eventPrevious = elem.select("td[id*=eventPrevious]").text();
@@ -175,30 +183,71 @@ public class ForexPro implements HarvestLocation {
 
 	}
 
-	private void getHistoricalDetailsByEventId(EdIndicator edIndicator,
-			String eventId) throws IOException {
+	public List<EdHistory> getHistoricalDetailsByEventId(
+			EdIndicator edIndicator, String eventId) throws IOException {
 		setConnObj(constructUrlForEventHistoricalData(eventId));
 		Document moreEventHistoralDetailsDoc = getConnObj().get();
-		Elements moreHistoricalDetailsReleaseDates = moreEventHistoralDetailsDoc
-				.select("td[class*=left]");
 
-		for (Element element : moreHistoricalDetailsReleaseDates) {
-			String releaseDate = element.text().trim().replaceAll("\u00A0", "")
-					.replaceAll(" ", "");
-			if (!releaseDate.isEmpty()) {
-				logger.info("Release Date : " + releaseDate);
-				String[] releaseDateAsArray = releaseDate.split("\\.");
-				String month = releaseDateAsArray[0].toUpperCase();
-				int monthAsInt = Month.valueOf(month).ordinal() + ARRAY_OFFSET;
-				int day = Integer.parseInt(releaseDateAsArray[1].split(",")[0]);
-				int year = Integer
-						.parseInt(releaseDateAsArray[1].split(",")[0]);
+		List<EdHistory> edHistories = new ArrayList<EdHistory>();
+
+		Elements historicalDetailElementsRow = moreEventHistoralDetailsDoc
+				.select("tr");
+
+		for (Element historicalDetailElementRow : historicalDetailElementsRow) {
+			EdHistory edHistory = new EdHistory();
+			Elements historicalDetailElementCells = historicalDetailElementRow
+					.select("td");
+
+			int index = 0;
+			for (Element historicalDetailCell : historicalDetailElementCells) {
+				String element = historicalDetailCell.text().trim()
+						.replaceAll("\u00A0", "").replaceAll(" ", "");
+
+				index++;
+				switch (index) {
+				case 1:
+					edHistory.setReleaseDate(extractReleaseDate(element));
+					break;
+				case 2:
+					edHistory.setActual(element);
+					break;
+				case 3:
+					edHistory.setConsensus(element);
+					break;
+				case 4:
+					edHistory.setPervious(element);
+				}
 			}
+
+			if (edHistory.getReleaseDate() != null) {
+				edHistories.add(edHistory);
+			}
+
 		}
 
+		return edHistories;
 	}
 
-	private EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,
+	private Date extractReleaseDate(String releaseDateAsString) {
+		logger.info("Release Date : " + releaseDateAsString);
+
+		// May is inconsistent, this if statement normalises the data, see:
+		// http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreHistory&eventID=10828&historyNumEventsToShow=150
+		if (releaseDateAsString.contains("May")) {
+			releaseDateAsString = releaseDateAsString.replace("May", "May.");
+		}
+
+		String[] releaseDateAsArray = releaseDateAsString.split("\\.");
+		String month = releaseDateAsArray[0].toUpperCase();
+		int monthAsInt = Month.valueOf(month).ordinal() + ARRAY_OFFSET;
+		int day = Integer.parseInt(releaseDateAsArray[1].split(",")[0]);
+		int year = Integer.parseInt(releaseDateAsArray[1].split(",")[0]);
+
+		LocalDate releaseDate = new LocalDate(monthAsInt, day, year);
+		return releaseDate.toDate();
+	}
+
+	public EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,
 			String eventId) throws IOException {
 		setConnObj(constructUrlForMoreEventDetails(eventId));
 		Document moreEventDetailsDoc = getConnObj().get();
@@ -257,16 +306,20 @@ public class ForexPro implements HarvestLocation {
 		return urlForDate;
 	}
 
-	private String constructUrlForMoreEventDetails(String id) {
+	private String constructUrlForMoreEventDetails(String eventId) {
 		String urlForEventDetail = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreDetails&eventID="
-				+ id;
+				+ eventId;
 		logger.info("Url for more details: " + urlForEventDetail);
 		return urlForEventDetail;
 	}
 
-	private String constructUrlForEventHistoricalData(String id) {
-		String urlForHistoricalEventDetail = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreEventDetails&eventID="
-				+ id + "&type=moreHistory&chartSize=605%20HTTP/1.1";
+	private String constructUrlForEventHistoricalData(String eventid) {
+		// String urlForHistoricalEventDetail =
+		// "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreEventDetails&eventID="
+		// + eventid + "&type=moreHistory&chartSize=605%20HTTP/1.1";
+		String urlForHistoricalEventDetail = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=getMoreHistory&eventID="
+				+ eventid + "&historyNumEventsToShow=150";
+
 		logger.info("Url for historical details: "
 				+ urlForHistoricalEventDetail);
 		return urlForHistoricalEventDetail;

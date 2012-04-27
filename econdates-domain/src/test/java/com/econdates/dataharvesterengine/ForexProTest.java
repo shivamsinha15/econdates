@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Connection.Response;
@@ -23,8 +24,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdIndicator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,8 +33,23 @@ import com.econdates.domain.entities.EdIndicator;
 @ContextConfiguration(locations = { "classpath:application-testcontext.xml",
 "classpath:test-infrastructure.xml" })
 public class ForexProTest {
-	
+			 
 	private final Logger logger = LoggerFactory.getLogger(ForexPro.class);
+	private static final String NAME = "AIG Construction Index";
+	private static final LocalTime LOCAL_TIME = new LocalTime(22,30);
+	private static final int RELEASE_DAY_WEEK = 7;
+	private static final int RELEASE_DAY_MONTH = 6;
+	private static final String URL = "http://www.aigroup.asn.au/";
+	private static final String SOURCE_REPORT = "Australian Industry Group";
+	private static final String COUNTRY = "AUSTRALIA";
+	private static final String EVENT_ID = "10828";
+	
+	private static final int YEAR= 2011;
+	private static final int MONTH=2;
+	private static final int DAY_OF_MONTH=6;
+	private static final int HOUR_OF_DAY=0;
+	private static final int MINUTE_OF_HOUR=0;
+	private static final int TIMEZONE=0;
 
 	@Autowired
 	@Qualifier("forexPro")
@@ -82,17 +98,29 @@ public class ForexProTest {
 		assertEquals("2011-02-06",day.toString(fmt));
 	}
 
+
+	@Test
+	public void testGetMoreDetailsByEventId() throws IOException{
+		EdIndicator moreDetailsAboutEdIndicator = forexPro.getMoreDetailsByEventId(new EdIndicator(),EVENT_ID);
+		EdIndicator expectedEdIndicator = new EdIndicator();
+		expectedEdIndicator.setSourceReport(SOURCE_REPORT);
+		expectedEdIndicator.setReleaseUrl(URL);
+		assertEquals(expectedEdIndicator,moreDetailsAboutEdIndicator);
+	}
+	
+	@Test
+	public void testGetHistoricalDetailsByEventId() throws IOException {
+		List<EdHistory> edHistories = forexPro.getHistoricalDetailsByEventId(new EdIndicator(), EVENT_ID);
+		assertEquals(49,edHistories.size());
+	}
+	
+		
 	@Test
 	public void testParseDocumentToRetrieveIndicatorsForAParticulalDay()
 			throws IOException {
-		int year= 2011;
-		int month=2;
-		int dayOfMonth=6;
-		int hourOfDay=0;
-		int minuteOfHour=0;
-		int timezone=0;
 		
-		DateTime day = new DateTime(year,month,dayOfMonth,hourOfDay,minuteOfHour,timezone);
+		DateTime day = new DateTime(YEAR,MONTH,DAY_OF_MONTH,HOUR_OF_DAY,MINUTE_OF_HOUR,TIMEZONE);
+		
 		List<EdIndicator> indicators = forexPro
 				.getEconomicIndicatorsForSingleDay(day);
 
@@ -102,5 +130,6 @@ public class ForexProTest {
 		}
 
 	}
+	
 
 }

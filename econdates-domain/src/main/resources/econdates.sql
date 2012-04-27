@@ -105,8 +105,9 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 edh_actual VARCHAR(50),
 edh_consensus VARCHAR(50),
 edh_revised VARCHAR(50),
+edh_pervious VARCHAR(50),
 edh_analysis TEXT, 
-edh_release_date TIMESTAMP,
+edh_release_date DATE,
 edh_indicator_id INT,
 FOREIGN KEY (edh_indicator_id) REFERENCES ed_indicator (id) ON DELETE CASCADE
 )

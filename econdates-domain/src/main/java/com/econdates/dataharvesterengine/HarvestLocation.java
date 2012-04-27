@@ -1,7 +1,5 @@
 package com.econdates.dataharvesterengine;
 
-
-
 import java.io.IOException;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 
+import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdIndicator;
 
 public interface HarvestLocation {
@@ -23,8 +22,13 @@ public interface HarvestLocation {
 
 	boolean isValidEconomicDocument(Document doc);
 
-	List<EdIndicator> getEconomicIndicatorsForSingleDay(DateTime dateOnly) throws IOException;
+	List<EdIndicator> getEconomicIndicatorsForSingleDay(DateTime dateOnly)
+			throws IOException;
 
+	EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator, String eventId)
+			throws IOException;
 
+	List<EdHistory> getHistoricalDetailsByEventId(EdIndicator edIndicator,
+			String eventId) throws IOException;
 
 }
