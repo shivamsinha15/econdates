@@ -20,7 +20,8 @@ import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.joda.time.LocalTime;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  * Entity representing a economic indicator
@@ -65,8 +66,9 @@ public class EdIndicator {
 	@Column(name = "edi_description", columnDefinition = "TEXT")
 	private String description;
 
+	@Temporal(TemporalType.TIME)
 	@Column(name = "edi_release_time")
-	private LocalTime releaseTime;
+	private Date releaseTime;
 
 	@Column(name = "edi_release_frequency")
 	private Integer releaseFrequency;
@@ -85,7 +87,7 @@ public class EdIndicator {
 
 	@Column(name = "edi_source_report")
 	private String sourceReport;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "edi_last_updated")
 	private Date lastUpdated;
@@ -96,7 +98,7 @@ public class EdIndicator {
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "edh_indicator_id")
-	Set<EdHistory> edHistories;
+	private Set<EdHistory> edHistories;
 
 	public Long getId() {
 		return id;
@@ -130,11 +132,11 @@ public class EdIndicator {
 		this.releaseUrl = releaseUrl;
 	}
 
-	public LocalTime getReleaseTime() {
+	public Date getReleaseTime() {
 		return releaseTime;
 	}
 
-	public void setReleaseTime(LocalTime releaseTime) {
+	public void setReleaseTime(Date releaseTime) {
 		this.releaseTime = releaseTime;
 	}
 
@@ -162,15 +164,12 @@ public class EdIndicator {
 		return edCountry;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj, new String[] { "id",
-				"description" });
+	public void setEdHistories(Set<EdHistory> edHistories2) {
+		this.edHistories = edHistories2;
 	}
 
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+	public Set<EdHistory> getEdEdHistories() {
+		return edHistories;
 	}
 
 	public void setReleaseDayOfWeek(Integer releaseDayOfWeek) {
@@ -196,21 +195,36 @@ public class EdIndicator {
 	public Integer getReleaseDayOfMonth() {
 		return releaseDayOfMonth;
 	}
-	
 
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj, new String[] { "id",
+				"description" });
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 
 	@Override
 	public String toString() {
-		return "EdIndicator [id=" + id + ",\n name=" + name + ",\n importance="
-				+ importance + ",\n description=" + description
-				+ ",\n releaseTime=" + releaseTime + ",\n releaseFrequency="
-				+ releaseFrequency + ",\n releaseDayOfWeek=" + releaseDayOfWeek
-				+ ",\n releaseDayOfMonth=" + releaseDayOfMonth
-				+ ",\n releaseUrl=" + releaseUrl + ",\n releasePage="
-				+ releasePage + ",\n sourceReport=" + sourceReport
-				+ ",\n edCountry=" + edCountry.getCountryName() + ",\n edHistories="
-				+ edHistories + "]";
+		return "EdIndicator [id=" + id + ", name=" + name + ", importance="
+				+ importance + ", description=" + description
+				+ ", releaseTime=" + releaseTime + ", releaseFrequency="
+				+ releaseFrequency + ", releaseDayOfWeek=" + releaseDayOfWeek
+				+ ", releaseDayOfMonth=" + releaseDayOfMonth + ", releaseUrl="
+				+ releaseUrl + ", releasePage=" + releasePage
+				+ ", sourceReport=" + sourceReport + ", lastUpdated="
+				+ lastUpdated + " edi_country_id = " + edCountry.getId() + "]";
 	}
-	
 
 }

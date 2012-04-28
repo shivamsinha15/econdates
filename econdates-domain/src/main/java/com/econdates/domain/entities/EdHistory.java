@@ -14,6 +14,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 
 @Entity
 @Table(name = EdHistory.TABLE_NAME)
@@ -40,10 +43,11 @@ public class EdHistory {
 	private String analysis;
 	
 	@Temporal(TemporalType.DATE)
+	@Column(name="edh_release_date")
 	private Date releaseDate;
 	
-	@Column(name = "edh_pervious")
-	private String pervious;
+	@Column(name = "edh_previous")
+	private String previous;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "edh_indicator_id")
@@ -101,13 +105,23 @@ public class EdHistory {
 		return serialVersionUID;
 	}
 
-	public String getPervious() {
-		return pervious;
+	public String getPrevious() {
+		return previous;
 	}
 
-	public void setPervious(String pervious) {
-		this.pervious = pervious;
+	public void setPrevious(String previous) {
+		this.previous = previous;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj, new String[] { "id",
+				"analysis","revised" });
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 
 }

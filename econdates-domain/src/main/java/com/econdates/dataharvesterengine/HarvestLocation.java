@@ -2,9 +2,9 @@ package com.econdates.dataharvesterengine;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 
@@ -28,7 +28,7 @@ public interface HarvestLocation {
 	EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator, String eventId)
 			throws IOException;
 
-	List<EdHistory> getHistoricalDetailsByEventId(EdIndicator edIndicator,
+	Set<EdHistory> getHistoricalDetailsByEventId(EdIndicator edIndicator,
 			String eventId) throws IOException;
 
 }
