@@ -63,7 +63,7 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	 * relationship to Y has been annotated with the cascade element value
 	 * cascade=PERSIST or cascade=ALL, the persist operation is applied to Y.
 	 */
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void persistCollection(Collection<T> entities) {
 		for (T t : entities) {
 			System.out.println("Persisting: " + t.toString());
@@ -88,7 +88,7 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	 * em.merge(e); e2.setSomeField(anotherValue); // tran ends and the row for
 	 * someField is updated (the changes were made to e2, not e)
 	 */
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void mergeCollection(Collection<T> entities) {
 		for (T t : entities) {
 			System.out.println("Merging: " + t.toString());

@@ -11,6 +11,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.google.common.base.Objects;
+
 /**
  * Entity representing countries
  * 
@@ -38,6 +40,38 @@ public class EdCountry {
 	@Column(name = "edc_currency_code")
 	private String currencyCode;
 
+	@Column(name = "edc_mobile_ext")
+	private String mobileExtension;
+
+	@Column(name = "edc_capital")
+	private String capital;
+
+	@Column(name = "edc_map_reference")
+	private String mapReference;
+
+	@Column(name = "edc_nationality_singular")
+	private String nationalitySingular;
+
+	@Column(name = "edc_nationality_plural")
+	private String nationalityPlural;
+
+	@Column(name = "edc_fips_104")
+	private String fips;
+
+	@Column(name = "edc_iso_2")
+	private String iso2;
+
+	@Column(name = "edc_iso_3")
+	private String iso3;
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdHoliday.class)
+	@JoinColumn(name = "edh_country_id")
+	Collection<EdHoliday> edHolidays;
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdRegion.class)
+	@JoinColumn(name = "edr_country_id")
+	Collection<EdRegion> edRegions;
+
 	public long getId() {
 		return id;
 	}
@@ -52,15 +86,6 @@ public class EdCountry {
 
 	public void setCountryName(String countryName) {
 		this.countryName = countryName;
-	}
-
-	@Override
-	public String toString() {
-		return "EdCountry [id=" + id + ", countryName=" + countryName
-				+ ", currencyName=" + currencyName + ", currencyCode="
-				+ currencyCode + ", mobileExtension=" + mobileExtension
-				+ ", capital=" + capital + ", mapReference=" + mapReference
-				+ ", edHoliday=" + edHolidays + ", edRegion=" + edRegions + "]";
 	}
 
 	public String getCurrencyName() {
@@ -167,37 +192,32 @@ public class EdCountry {
 		return TABLE_NAME;
 	}
 
-	@Column(name = "edc_mobile_ext")
-	private String mobileExtension;
+	@Override
+	public String toString() {
+		return "EdCountry [id=" + id + ", countryName=" + countryName
+				+ ", currencyName=" + currencyName + ", currencyCode="
+				+ currencyCode + ", mobileExtension=" + mobileExtension
+				+ ", capital=" + capital + ", mapReference=" + mapReference
+				+ ", edHoliday=" + edHolidays + ", edRegion=" + edRegions + "]";
+	}
 
-	@Column(name = "edc_capital")
-	private String capital;
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj instanceof EdCountry) {
+			final EdCountry other = (EdCountry) obj;
+			return Objects.equal(countryName, other.countryName)
+					&& Objects.equal(currencyCode, other.currencyCode)
+					&& Objects.equal(mobileExtension, other.mobileExtension)
+					&& Objects.equal(capital, other.capital);
+		} else {
+			return false;
+		}
+	}
 
-	@Column(name = "edc_map_reference")
-	private String mapReference;
-
-	@Column(name = "edc_nationality_singular")
-	private String nationalitySingular;
-
-	@Column(name = "edc_nationality_plural")
-	private String nationalityPlural;
-
-	@Column(name = "edc_fips_104")
-	private String fips;
-
-	@Column(name = "edc_iso_2")
-	private String iso2;
-
-	@Column(name = "edc_iso_3")
-	private String iso3;
-
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdHoliday.class)
-	@JoinColumn(name = "edh_country_id")
-	Collection<EdHoliday> edHolidays;
-
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdRegion.class)
-	@JoinColumn(name = "edr_country_id")
-	Collection<EdRegion> edRegions;
-
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(countryName, currencyCode, mobileExtension,
+				capital);
+	}
 
 }

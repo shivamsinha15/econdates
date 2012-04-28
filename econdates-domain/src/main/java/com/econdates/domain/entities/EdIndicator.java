@@ -18,10 +18,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
+import com.google.common.base.Objects;
 
 /**
  * Entity representing a economic indicator
@@ -34,7 +34,9 @@ import org.hibernate.annotations.CascadeType;
 @Table(name = EdIndicator.TABLE_NAME)
 public class EdIndicator {
 
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
+	
 	public static final String TABLE_NAME = "ed_indicator";
 
 	public enum Importance {
@@ -96,8 +98,7 @@ public class EdIndicator {
 	@JoinColumn(name = "edi_country_id")
 	private EdCountry edCountry;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "edh_indicator_id")
+	@OneToMany(mappedBy="edIndicator")
 	private Set<EdHistory> edHistories;
 
 	public Long getId() {
@@ -168,7 +169,7 @@ public class EdIndicator {
 		this.edHistories = edHistories2;
 	}
 
-	public Set<EdHistory> getEdEdHistories() {
+	public Set<EdHistory> getEdHistories() {
 		return edHistories;
 	}
 
@@ -205,14 +206,20 @@ public class EdIndicator {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj, new String[] { "id",
-				"description" });
+	public boolean equals(final Object obj) {
+		  if(obj instanceof EdIndicator){
+		        final EdIndicator other = (EdIndicator) obj;
+		        return Objects.equal(name, other.name)
+		            && Objects.equal(edCountry, other.edCountry)
+		            && Objects.equal(importance, other.importance);
+		    } else{
+		        return false;
+		    }
 	}
 
 	@Override
 	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+		return Objects.hashCode(name, edCountry, importance);
 	}
 
 	@Override

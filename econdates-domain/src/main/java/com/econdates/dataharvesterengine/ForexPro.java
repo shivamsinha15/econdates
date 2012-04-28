@@ -11,7 +11,6 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
-import org.joda.time.chrono.GregorianChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Connection;
@@ -177,9 +176,9 @@ public class ForexPro implements HarvestLocation {
 
 				EdHistory currentFigures = new EdHistory();
 				currentFigures.setActual(eventActual);
-				currentFigures.setConsensus(eventForecast.isEmpty() ? null : eventActual);
+				currentFigures.setConsensus(eventForecast.trim().isEmpty() ? null : eventActual);
 				currentFigures.setPrevious(eventPrevious);
-				currentFigures.setRevised(eventRevisedFrom.isEmpty() ? null : eventRevisedFrom);
+				currentFigures.setRevised(eventRevisedFrom.trim().isEmpty() ? null : eventRevisedFrom);
 				currentFigures.setReleaseDate(day.toDate());
 				currentFigures.setEdIndicator(edIndicator);
 
@@ -207,6 +206,8 @@ public class ForexPro implements HarvestLocation {
 				edIndicatorsForADay.add(edIndicator);
 			}
 		}
+		edIndicatorDAOImpl.persistCollection(edIndicatorsForADay);
+		edHistoryDAOImpl.persistCollection(edHistories);
 		return edIndicatorsForADay;
 	}
 
@@ -231,8 +232,7 @@ public class ForexPro implements HarvestLocation {
 				index++;
 				switch (index) {
 				case 1:
-					edHistory
-							.setReleaseDate(extractReleaseDateForHistoricalDetails(element));
+					edHistory.setReleaseDate(extractReleaseDateForHistoricalDetails(element));
 					break;
 				case 2:
 					edHistory.setActual(element);

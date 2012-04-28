@@ -1,7 +1,11 @@
 package com.econdates.dataharvesterengine;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.chrono.GregorianChronology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +13,14 @@ import org.springframework.stereotype.Service;
 
 import com.econdates.domain.entities.EdCity;
 import com.econdates.domain.entities.EdCountry;
+import com.econdates.domain.entities.EdHistory;
+import com.econdates.domain.entities.EdIndicator;
+import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.entities.EdRegion;
 import com.econdates.domain.persistance.EdCityDAO;
 import com.econdates.domain.persistance.EdCountryDAO;
+import com.econdates.domain.persistance.EdHistoryDAO;
+import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.econdates.domain.persistance.EdRegionDAO;
 
 @Service
@@ -22,9 +31,19 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	private boolean isCityDataInit = false;
 	private boolean isHolidayDAOInit = false;
 	private boolean isIndicatorDAOInit = false;
+	private boolean isHistoryDAOInt = false;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EconDateInitDatabaseImpl.class);
+	private static final int END_YEAR = 2009;
+	private static final int END_MONTH = 1;
+	private static final int END_DAY_OF_MONTH = 1;
+	private static final int ONE_DAY = 1;
+	
+	//
+	private static final long COUNTRY_ID = 14;
+	private static final String COUNTRY_NAME = "Australia";
+	private static final String NAME = "AIG Construction Index";
 
 	@Autowired
 	EdCountryDAO edCountryDAOImpl;
@@ -36,7 +55,53 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	EdCityDAO edCityDAOImpl;
 
 	@Autowired
+	EdIndicatorDAO edIndicatorDAOImpl;
+
+	@Autowired
+	EdHistoryDAO edHistoryDAOImpl;
+
+	@Autowired
 	ImportStaticData importStaticDataImpl;
+
+	@Autowired
+	HarvestLocation forexPro;
+
+	public void initIndicatorAndHistoryData() throws IOException {
+
+		// use current date and iterate backwards to 2009
+		LocalDate startDate = new LocalDate(
+				GregorianChronology.getInstanceUTC());
+		LocalDate endDate = new LocalDate(END_YEAR, END_MONTH,
+				END_DAY_OF_MONTH, GregorianChronology.getInstanceUTC());
+
+		while (!startDate.equals(endDate)) {
+			// for a date get all the Indicators and the associated EdHistories
+			List<EdIndicator> edIndicators = forexPro
+					.getEconomicIndicatorsForSingleDay(startDate
+							.toDateTimeAtCurrentTime(DateTimeZone
+									.forID("Etc/UTC")));
+
+			// for each indicator determine if it is in the database if not
+			// persist
+			for (EdIndicator edIndicator : edIndicators) {
+				EdIndicator dbEdIndicator = edIndicatorDAOImpl
+						.findByNameCountryAndImportance(edIndicator.getName(),
+								edIndicator.getEdCountry().getId(),
+								edIndicator.getImportance());
+
+				if (dbEdIndicator == null) {
+					edIndicatorDAOImpl.saveOrUpdate(edIndicator);
+				}
+
+				// for each EdHistory determine if its in the database if not
+				// persist
+				for (EdHistory edHistory : edIndicator.getEdHistories()) {
+					edHistoryDAOImpl.findByEdHistory(edHistory);
+				}
+			}
+			startDate.minusDays(ONE_DAY);
+		}
+	}
 
 	public boolean isHolidayDAOInit() {
 		return isHolidayDAOInit;
@@ -125,6 +190,18 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 		}
 		return isCityDataInit;
+	}
+	
+	public void setUpExampleAIGEdIndicator (){
+		EdIndicator aigIndicator = edIndicatorDAOImpl.findByNameCountryAndImportance(NAME, COUNTRY_ID, Importance.Low);
+		
+		if(aigIndicator==null){
+			EdIndicator edIndicator = new EdIndicator();
+			edIndicator.setName(NAME);
+			edIndicator.setEdCountry(edCountryDAOImpl.findByName(COUNTRY_NAME));
+			edIndicator.setImportance(Importance.Low);
+			edIndicatorDAOImpl.saveOrUpdate(aigIndicator);
+		}
 	}
 
 	private void setCityDataInit(boolean isCityDataInit) {

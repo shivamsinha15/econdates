@@ -8,8 +8,8 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import com.econdates.domain.entities.EdIndicator;
+import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.persistance.EdIndicatorDAO;
-import com.econdates.domain.persistance.EdCountryDAO;
 
 @Repository
 public class EdIndicatorDAOImpl extends GenericEjb3DAO<EdIndicator> implements
@@ -26,6 +26,15 @@ public class EdIndicatorDAOImpl extends GenericEjb3DAO<EdIndicator> implements
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 
+	}
+
+	public EdIndicator findByNameCountryAndImportance(String name,
+			long edCountry, Importance importance) {
+		return (EdIndicator) entityManager.createQuery(
+				"from " + getEntityBeanType().getName() + " e WHERE e.name='"
+						+ name + "' AND e.edCountry ='" + edCountry
+						+ "'AND e.importance ='" + importance + "'")
+				.getSingleResult();
 	}
 
 }

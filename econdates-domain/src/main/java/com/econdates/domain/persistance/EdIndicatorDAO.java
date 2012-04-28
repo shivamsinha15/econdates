@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.econdates.domain.entities.EdIndicator;
+import com.econdates.domain.entities.EdIndicator.Importance;
 
 public interface EdIndicatorDAO extends GenericDAO<EdIndicator> {
 
@@ -11,8 +12,11 @@ public interface EdIndicatorDAO extends GenericDAO<EdIndicator> {
 
 	List<EdIndicator> findAll();
 
-	void mergeCollection(Collection<EdIndicator> edCities);
+	void mergeCollection(Collection<EdIndicator> edIndicator);
 
-	void persistCollection(Collection<EdIndicator> edCities);
+	void persistCollection(Collection<EdIndicator> edIndicator);
+
+	EdIndicator findByNameCountryAndImportance(String name, long edCountry,
+			Importance importance);
 
 }

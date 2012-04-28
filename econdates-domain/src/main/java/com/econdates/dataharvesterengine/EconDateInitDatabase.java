@@ -8,4 +8,5 @@ public interface EconDateInitDatabase {
 	void initRegionData();
 	boolean isCityDataInit();
 	void initCityData();
+	void setUpExampleAIGEdIndicator();
 }

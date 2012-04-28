@@ -15,4 +15,6 @@ public interface EdHistoryDAO extends GenericDAO<EdHistory> {
 
 	void persistCollection(Collection<EdHistory> edHistory);
 
+	EdHistory findByEdHistory(EdHistory edHistory);
+
 }

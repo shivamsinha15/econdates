@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.econdates.domain.entities.EdCity;
 import com.econdates.domain.persistance.EdCityDAO;
-import com.econdates.domain.persistance.EdCountryDAO;
 
 @Repository
 public class EdCityDAOImpl extends GenericEjb3DAO<EdCity> implements

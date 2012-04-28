@@ -119,7 +119,7 @@ public class ForexProTest {
 	public void testGetHistoricalDetailsByEventId() throws IOException {
 		Set<EdHistory> edHistories = forexPro.getHistoricalDetailsByEventId(
 				new EdIndicator(), EVENT_ID);
-		assertEquals(49, edHistories.size());
+		assertEquals(48, edHistories.size());
 	}
 
 	@Test
@@ -134,7 +134,7 @@ public class ForexProTest {
 
 		logger.info("INDICATOR SIZE: " + indicators.size());
 		assertEquals(1,indicators.size());
-		assertEquals(50, indicators.get(0).getEdEdHistories().size());
+		assertEquals(49, indicators.get(0).getEdHistories().size());
 	}
 
 }
