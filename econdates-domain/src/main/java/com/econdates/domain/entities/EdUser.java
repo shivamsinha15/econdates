@@ -22,7 +22,6 @@ import javax.persistence.TemporalType;
 public class EdUser {
 
 	public static final String TABLE_NAME = "ed_user";
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

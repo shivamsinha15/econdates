@@ -12,7 +12,6 @@ import org.hibernate.annotations.Type;
 public class EdCity {
 
 	public static final String TABLE_NAME = "ed_city";
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")

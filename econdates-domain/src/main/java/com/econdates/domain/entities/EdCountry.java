@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -64,13 +63,13 @@ public class EdCountry {
 	@Column(name = "edc_iso_3")
 	private String iso3;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdHoliday.class)
-	@JoinColumn(name = "edh_country_id")
+	@OneToMany(mappedBy="edCountry")
 	Collection<EdHoliday> edHolidays;
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdRegion.class)
 	@JoinColumn(name = "edr_country_id")
 	Collection<EdRegion> edRegions;
+	
 
 	public long getId() {
 		return id;

@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,10 +114,23 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 		entityManager.merge(entity);
 		entityManager.flush();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public T findOne() {
+		try{
+		return  (T) entityManager.createQuery(
+				"from " + getEntityBeanType().getName()).setMaxResults(1).getSingleResult();
+		} catch(NoResultException nre){
+			return null;
+		}
+	}
+
 
 	protected EntityManager getEntityManager() {
 		return entityManager;
 	}
+	
+	
 
 	public abstract void setEntityManager(EntityManager entityManager);
 

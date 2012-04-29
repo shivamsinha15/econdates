@@ -27,8 +27,9 @@ public class EdCountryDAOImpl extends GenericEjb3DAO<EdCountry> implements
 
 	public EdCountry findByName(String countryName) {
 		try{
-		return  (EdCountry) entityManager.createQuery(
+		EdCountry edCountry =  (EdCountry) entityManager.createQuery(
 				"from " + getEntityBeanType().getName() + " e WHERE e.countryName='" +countryName + "'").getSingleResult();
+		return edCountry;
 		} catch(NoResultException nre){
 				LOG.info("Country does not exist in Database " + countryName);
 				return null;

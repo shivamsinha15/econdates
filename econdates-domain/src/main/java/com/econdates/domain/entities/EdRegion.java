@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -15,7 +14,6 @@ import javax.persistence.Table;
 @Table(name = EdRegion.TABLE_NAME)
 public class EdRegion {
 
-	private static final long serialVersionUID = 1L;
 	public static final String TABLE_NAME = "ed_region";
 
 	@Id

@@ -23,5 +23,11 @@ public interface EconDateInitDatabase {
 	void initEuroZoneAsCountry();
 	
 	boolean isEuroZoneAsCountryDataInit();
+
+	boolean isIndicatorAndHistoryDataInit();
+
+	boolean isHolidayDataInit();
+
+	void initHolidayData();
 	
 }

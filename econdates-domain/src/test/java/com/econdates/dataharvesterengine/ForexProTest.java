@@ -27,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.econdates.domain.entities.EdHistory;
+import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 
@@ -123,8 +124,7 @@ public class ForexProTest {
 	}
 
 	@Test
-	public void testParseDocumentToRetrieveIndicatorsForAParticulalDay()
-			throws IOException {
+	public void testGetEconomicIndicatorsForSingleDay() throws IOException {
 
 		DateTime day = new DateTime(YEAR, MONTH, DAY_OF_MONTH, HOUR_OF_DAY,
 				MINUTE_OF_HOUR, TIMEZONE);
@@ -133,8 +133,16 @@ public class ForexProTest {
 				.getEconomicIndicatorsForSingleDay(day);
 
 		logger.info("INDICATOR SIZE: " + indicators.size());
-		assertEquals(1,indicators.size());
+		assertEquals(1, indicators.size());
 		assertEquals(49, indicators.get(0).getEdHistories().size());
+	}
+
+	@Test
+	public void testGetEdHolidaysForASingleDay() throws IOException {
+		DateTime day = new DateTime(2011, 04, 26, 0, 0, 0);
+		List<EdHoliday> edHolidays = forexPro.getEdHolidaysForASingleDay(day);
+		logger.info("HOLIDAYs SIZE: " + edHolidays.size());
+		assertEquals(1, edHolidays.size());
 	}
 
 }

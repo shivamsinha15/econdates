@@ -14,11 +14,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-
-
 import com.google.common.base.Objects;
 
 /**
@@ -30,7 +25,6 @@ import com.google.common.base.Objects;
 public class EdHistory {
 
 	public static final String TABLE_NAME = "ed_history";
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -114,10 +108,6 @@ public class EdHistory {
 
 	public void setEdIndicator(EdIndicator edIndicator) {
 		this.edIndicator = edIndicator;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public String getPrevious() {

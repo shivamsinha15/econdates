@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.joda.time.MutableDateTime;
 import org.joda.time.chrono.GregorianChronology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,7 @@ import com.econdates.domain.entities.EdRegion;
 import com.econdates.domain.persistance.EdCityDAO;
 import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdHistoryDAO;
+import com.econdates.domain.persistance.EdHolidayDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.econdates.domain.persistance.EdRegionDAO;
 
@@ -31,10 +31,9 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	private boolean isCountryDataInit = false;
 	private boolean isRegionDataInit = false;
 	private boolean isCityDataInit = false;
-	private boolean isHolidayDAOInit = false;
+	private boolean isHolidayDataInit = false;
 	private boolean isEuroZoneAsCountryDataInit = false;
-	private boolean isIndicatorDAOInit = false;
-	private boolean isHistoryDAOInt = false;
+	private boolean isIndicatorAndHistoryDAOInit = false;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EconDateInitDatabaseImpl.class);
@@ -62,12 +61,28 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	@Autowired
 	EdHistoryDAO edHistoryDAOImpl;
+	
+	@Autowired
+	EdHolidayDAO edHolidayDAOImpl;
 
 	@Autowired
 	ImportStaticData importStaticDataImpl;
 
 	@Autowired
 	HarvestLocation forexPro;
+	
+	public void initHolidayData() {
+		if(!isHolidayDataInit()){
+			
+			// ToDo
+			
+			
+		}
+		
+	}
+
+	
+	
 
 	public void initIndicatorAndHistoryData() throws IOException {
 
@@ -76,43 +91,44 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 				GregorianChronology.getInstanceUTC());
 		LocalDate endDate = new LocalDate(END_YEAR, END_MONTH,
 				END_DAY_OF_MONTH, GregorianChronology.getInstanceUTC());
+		if (!isIndicatorAndHistoryDataInit()) {
+			while (!startDate.equals(endDate)) {
+				// for a date get all the Indicators and the associated
+				// EdHistories
+				List<EdIndicator> edIndicators = forexPro
+						.getEconomicIndicatorsForSingleDay(startDate
+								.toDateTimeAtCurrentTime(DateTimeZone
+										.forID("Etc/UTC")));
 
-		while (!startDate.equals(endDate)) {
-			// for a date get all the Indicators and the associated EdHistories
-			List<EdIndicator> edIndicators = forexPro
-					.getEconomicIndicatorsForSingleDay(startDate
-							.toDateTimeAtCurrentTime(DateTimeZone
-									.forID("Etc/UTC")));
-
-			// for each indicator determine if it is in the database if not
-			// persist
-			for (EdIndicator edIndicator : edIndicators) {
-				EdIndicator dbEdIndicator = edIndicatorDAOImpl
-						.findByNameCountryAndImportance(edIndicator.getName(),
-								edIndicator.getEdCountry().getId(),
-								edIndicator.getImportance());
-
-				if (dbEdIndicator == null) {
-					edIndicatorDAOImpl.persist(edIndicator);
-				}
-
-				// for each EdHistory determine if its in the database if not
+				// for each indicator determine if it is in the database if not
 				// persist
-				for (EdHistory edHistory : edIndicator.getEdHistories()) {
-					EdHistory dbEdHistory = edHistoryDAOImpl
-							.findByEdHistory(edHistory);
-					if (!edHistory.equals(dbEdHistory)) {
-						edHistoryDAOImpl.persist(edHistory);
+				for (EdIndicator edIndicator : edIndicators) {
+					EdIndicator dbEdIndicator = edIndicatorDAOImpl
+							.findByNameCountryAndImportance(edIndicator
+									.getName(), edIndicator.getEdCountry()
+									.getId(), edIndicator.getImportance());
+
+					if (dbEdIndicator == null) {
+						edIndicatorDAOImpl.persist(edIndicator);
+					}
+
+					// for each EdHistory determine if its in the database if
+					// not
+					// persist
+					for (EdHistory edHistory : edIndicator.getEdHistories()) {
+						EdHistory dbEdHistory = edHistoryDAOImpl
+								.findByEdHistory(edHistory);
+						if (!edHistory.equals(dbEdHistory)) {
+							edHistoryDAOImpl.persist(edHistory);
+						}
 					}
 				}
+				startDate = startDate.minusDays(ONE_DAY);
 			}
-			startDate = startDate.minusDays(ONE_DAY);
 		}
 	}
 
-	public boolean isHolidayDAOInit() {
-		return isHolidayDAOInit;
-	}
+
 
 	public void initCountryData() {
 		List<EdCountry> edCountries = edCountryDAOImpl.findAll();
@@ -250,5 +266,27 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	public void setEuroZoneAsCountryDataInit(boolean isEuroZoneAsCountryDataInit) {
 		this.isEuroZoneAsCountryDataInit = isEuroZoneAsCountryDataInit;
 	}
+
+	public boolean isIndicatorAndHistoryDataInit() {
+		if((edHistoryDAOImpl.findOne()!= null) && (edIndicatorDAOImpl.findOne()!=null)){
+			setIndicatorAndHistoryDAOInit(true);
+		}
+		return isIndicatorAndHistoryDAOInit;
+	}
+
+	public void setIndicatorAndHistoryDAOInit(
+			boolean isIndicatorAndHistoryDAOInit) {
+		this.isIndicatorAndHistoryDAOInit = isIndicatorAndHistoryDAOInit;
+	}
+
+	public boolean isHolidayDataInit() {
+		
+		return isHolidayDataInit;
+	}
+
+	public void setHolidayDataInit(boolean isHolidayDataInit) {
+		this.isHolidayDataInit = isHolidayDataInit;
+	}
+
 
 }

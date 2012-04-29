@@ -1,11 +1,10 @@
 package com.econdates.dataharvesterengine;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,16 @@ public class EconDateInitDatabaseImplTest {
 
 	@Test
 	public void initIndicatorAndHistoryData() throws IOException {
-		if (edInitDbImpl.isEuroZoneAsCountryDataInit()) {
+		if (edInitDbImpl.isEuroZoneAsCountryDataInit()
+				&& !edInitDbImpl.isIndicatorAndHistoryDataInit()) {
 			edInitDbImpl.initIndicatorAndHistoryData();
 		}
 	}
-
+	
+	@Test
+	public void initHolidaysData() throws IOException {
+		if(!edInitDbImpl.isHolidayDataInit()){
+			
+		}
+	}
 }

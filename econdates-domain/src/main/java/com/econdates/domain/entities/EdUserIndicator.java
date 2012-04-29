@@ -13,7 +13,6 @@ import javax.persistence.Table;
 public class EdUserIndicator {
 	
 	public static final String TABLE_NAME = "ed_user_indicator";
-	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

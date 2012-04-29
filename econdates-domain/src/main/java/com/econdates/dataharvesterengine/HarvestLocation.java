@@ -9,6 +9,7 @@ import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 
 import com.econdates.domain.entities.EdHistory;
+import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 
 public interface HarvestLocation {
@@ -30,5 +31,7 @@ public interface HarvestLocation {
 
 	Set<EdHistory> getHistoricalDetailsByEventId(EdIndicator edIndicator,
 			String eventId) throws IOException;
+	
+	List<EdHoliday> getEdHolidaysForASingleDay(DateTime dateOnly) throws IOException;
 
 }

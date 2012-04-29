@@ -29,5 +29,6 @@ public interface GenericDAO<T> {
 	
 	void persist(T entity);
 	
+	T findOne();
 
 }

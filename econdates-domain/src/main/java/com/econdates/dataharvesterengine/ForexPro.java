@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import com.econdates.domain.entities.EdCountry;
 import com.econdates.domain.entities.EdHistory;
+import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.persistance.EdCountryDAO;
@@ -110,12 +111,67 @@ public class ForexPro implements HarvestLocation {
 		logger.info("Retriving economic indicators for the date: "
 				+ day.toString(fmt));
 
-		setConnObj(constructUrlStringForAParticularDay(day));
+		setConnObj(constructUrlStringToGetIndicatorsAParticularDay(day));
 		return parseDocumentToRetrieveIndicatorsForAParticularDay(
 				getDocument(), day);
 	}
 
-	List<EdIndicator> parseDocumentToRetrieveIndicatorsForAParticularDay(
+	public List<EdHoliday> getEdHolidaysForASingleDay(DateTime day)
+			throws IOException {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+		logger.info("Retriving holidays for the date: " + day.toString(fmt));
+
+		setConnObj(constructUrlStringToGetHolidays(day));
+		return parseDocToRetrieveHolidaysForAParticularDay(getDocument(), day);
+	}
+
+	private List<EdHoliday> parseDocToRetrieveHolidaysForAParticularDay(
+			Document document, DateTime day) {
+		Elements holidayRows = document.select("tbody").select("tr");
+		Iterator holidayRowIterator = holidayRows.iterator();
+		List<EdHoliday> edHolidays = new ArrayList<EdHoliday>();
+
+		while (holidayRowIterator.hasNext()) {
+			EdHoliday edHoliday = new EdHoliday();
+			Element elem = (Element) holidayRowIterator.next();
+			Elements holidayRowCells = holidayRows.select("td");
+
+			int index = 0;
+			for (Element holidayCell : holidayRowCells) {
+
+				index++;
+				switch (index) {
+				case 1:
+					// This cell contains holiday date, however the date from
+					// the element is not required, since we already have it.
+					edHoliday.setDate(day.toDate());
+					break;
+				case 2:
+					// This cell contains padding, hence do nothing.
+					break;
+				case 3:
+					// This cell contains the country.
+					String countryName = holidayCell.select("a").text();
+					EdCountry edCountry = edCountryDAOImpl
+							.findByName(countryName);
+					edHoliday.setEdCountry(edCountry);
+					break;
+				case 4:
+					// This cell contain stock exchange name.
+					String stockExchange = holidayCell.text();
+					edHoliday.setMarketName(stockExchange);
+					break;
+				case 5:
+					// This cell contains the holidayName
+					edHoliday.setName(holidayCell.text());
+				}
+			}
+			edHolidays.add(edHoliday);
+		}
+		return edHolidays;
+	}
+
+	private List<EdIndicator> parseDocumentToRetrieveIndicatorsForAParticularDay(
 			Document document, DateTime day) throws IOException {
 		Elements indicatorDetails = document.select("tr[id*=eventRowId]");
 
@@ -166,7 +222,7 @@ public class ForexPro implements HarvestLocation {
 						.toDate());
 				edIndicator.setReleaseDayOfWeek(day.getDayOfWeek());
 				edIndicator.setReleaseDayOfMonth(day.getDayOfMonth());
-				edIndicator.setEdCountry(getEdCountry(eventCountry,eventName));
+				edIndicator.setEdCountry(getEdCountry(eventCountry, eventName));
 
 				/*
 				 * More Details Information: Release URL, Event Source Report,
@@ -209,9 +265,9 @@ public class ForexPro implements HarvestLocation {
 				edIndicatorsForADay.add(edIndicator);
 			}
 		}
-		//UsedForTest
-		//edIndicatorDAOImpl.persistCollection(edIndicatorsForADay);
-		//edHistoryDAOImpl.persistCollection(edHistories);
+		// UsedForTest
+		// edIndicatorDAOImpl.persistCollection(edIndicatorsForADay);
+		// edHistoryDAOImpl.persistCollection(edHistories);
 		return edIndicatorsForADay;
 	}
 
@@ -244,12 +300,12 @@ public class ForexPro implements HarvestLocation {
 							.trimFrom(element).isEmpty() ? null : element);
 					break;
 				case 3:
-					edHistory.setConsensus(CharMatcher.WHITESPACE
-							.trimFrom(element).isEmpty() ? null : element);
+					edHistory.setConsensus(CharMatcher.WHITESPACE.trimFrom(
+							element).isEmpty() ? null : element);
 					break;
 				case 4:
-					edHistory.setPrevious(CharMatcher.WHITESPACE
-							.trimFrom(element).isEmpty() ? null : element);
+					edHistory.setPrevious(CharMatcher.WHITESPACE.trimFrom(
+							element).isEmpty() ? null : element);
 				}
 			}
 
@@ -264,8 +320,8 @@ public class ForexPro implements HarvestLocation {
 	private Date extractReleaseDateForHistoricalDetails(
 			String releaseDateAsString) {
 		logger.info("Release Date : " + releaseDateAsString);
-		
-		if(releaseDateAsString.equalsIgnoreCase("Noresultsfound")){
+
+		if (releaseDateAsString.equalsIgnoreCase("Noresultsfound")) {
 			return null;
 		}
 
@@ -288,8 +344,8 @@ public class ForexPro implements HarvestLocation {
 		DateTime releaseDate = new DateTime(year, monthAsInt, day, HOUR_OF_DAY,
 				MINUTE_OF_HOUR, TIMEZONE);
 		return releaseDate.toDate();
-		}
-	
+	}
+
 	public EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,
 			String eventId) throws IOException {
 		setConnObj(constructUrlForMoreEventDetails(eventId));
@@ -334,7 +390,7 @@ public class ForexPro implements HarvestLocation {
 		}
 	}
 
-	private String constructUrlStringForAParticularDay(DateTime day) {
+	private String constructUrlStringToGetIndicatorsAParticularDay(DateTime day) {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		String urlForDate = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=filter&elemntsValues=dateFrom%3D"
 				+ day.toString(fmt)
@@ -359,6 +415,17 @@ public class ForexPro implements HarvestLocation {
 		logger.info("Url for historical details: "
 				+ urlForHistoricalEventDetail);
 		return urlForHistoricalEventDetail;
+	}
+
+	private String constructUrlStringToGetHolidays(DateTime day) {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+		String urlForHoliday = "http://www.forexpros.com/common/ajax_func.php?dates="
+				+ day.toString(fmt)
+				+ "|"
+				+ day.toString(fmt)
+				+ "&country=&action=holiday_calendar";
+		logger.info("Url for Holidays: " + urlForHoliday);
+		return urlForHoliday;
 	}
 
 	public Connection getConnObj() {
