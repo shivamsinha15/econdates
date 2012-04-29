@@ -1,12 +1,27 @@
 package com.econdates.dataharvesterengine;
 
+import java.io.IOException;
+
 public interface EconDateInitDatabase {
 
-	void initCountryData(); 
+	void initCountryData();
+
 	boolean isCountryDataInit();
+
 	boolean isRegionDataInit();
+
 	void initRegionData();
+
 	boolean isCityDataInit();
+
 	void initCityData();
+
 	void setUpExampleAIGEdIndicator();
+
+	void initIndicatorAndHistoryData() throws IOException;
+	
+	void initEuroZoneAsCountry();
+	
+	boolean isEuroZoneAsCountryDataInit();
+	
 }

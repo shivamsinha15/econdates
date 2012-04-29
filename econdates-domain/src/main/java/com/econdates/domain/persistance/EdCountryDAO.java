@@ -17,4 +17,8 @@ public interface EdCountryDAO extends GenericDAO<EdCountry> {
 	
 	EdCountry findByName(String countryName);
 
+	EdCountry findByNames(String eventCountry, String eventName);
+	
+	
+
 }

@@ -32,6 +32,7 @@ import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdHistoryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
+import com.google.common.base.CharMatcher;
 
 @Service
 public class ForexPro implements HarvestLocation {
@@ -165,20 +166,22 @@ public class ForexPro implements HarvestLocation {
 						.toDate());
 				edIndicator.setReleaseDayOfWeek(day.getDayOfWeek());
 				edIndicator.setReleaseDayOfMonth(day.getDayOfMonth());
-				edIndicator.setEdCountry(getEdCountry(eventCountry));
+				edIndicator.setEdCountry(getEdCountry(eventCountry,eventName));
 
 				/*
 				 * More Details Information: Release URL, Event Source Report,
 				 * Event Description Historical.
 				 */
-				
+
 				getMoreDetailsByEventId(edIndicator, eventId);
 
 				EdHistory currentFigures = new EdHistory();
 				currentFigures.setActual(eventActual);
-				currentFigures.setConsensus(eventForecast.trim().isEmpty() ? null : eventActual);
+				currentFigures.setConsensus(CharMatcher.WHITESPACE.trimFrom(
+						eventForecast).isEmpty() ? null : eventActual);
 				currentFigures.setPrevious(eventPrevious);
-				currentFigures.setRevised(eventRevisedFrom.trim().isEmpty() ? null : eventRevisedFrom);
+				currentFigures.setRevised(CharMatcher.WHITESPACE.trimFrom(
+						eventRevisedFrom).isEmpty() ? null : eventRevisedFrom);
 				currentFigures.setReleaseDate(day.toDate());
 				currentFigures.setEdIndicator(edIndicator);
 
@@ -187,10 +190,10 @@ public class ForexPro implements HarvestLocation {
 				 * does not contain current released information
 				 */
 
-				edHistories = getHistoricalDetailsByEventId(edIndicator,eventId);
+				edHistories = getHistoricalDetailsByEventId(edIndicator,
+						eventId);
 				edHistories.add(currentFigures);
 
-				edIndicator.setEdCountry(getEdCountry(eventCountry));
 				edIndicator.setEdHistories(edHistories);
 				// logger.info("Event WebId: " + eventId);
 				// logger.info("Event Time: " + eventTime);
@@ -206,8 +209,9 @@ public class ForexPro implements HarvestLocation {
 				edIndicatorsForADay.add(edIndicator);
 			}
 		}
-		edIndicatorDAOImpl.persistCollection(edIndicatorsForADay);
-		edHistoryDAOImpl.persistCollection(edHistories);
+		//UsedForTest
+		//edIndicatorDAOImpl.persistCollection(edIndicatorsForADay);
+		//edHistoryDAOImpl.persistCollection(edHistories);
 		return edIndicatorsForADay;
 	}
 
@@ -232,16 +236,20 @@ public class ForexPro implements HarvestLocation {
 				index++;
 				switch (index) {
 				case 1:
-					edHistory.setReleaseDate(extractReleaseDateForHistoricalDetails(element));
+					edHistory
+							.setReleaseDate(extractReleaseDateForHistoricalDetails(element));
 					break;
 				case 2:
-					edHistory.setActual(element);
+					edHistory.setActual(CharMatcher.WHITESPACE
+							.trimFrom(element).isEmpty() ? null : element);
 					break;
 				case 3:
-					edHistory.setConsensus(element);
+					edHistory.setConsensus(CharMatcher.WHITESPACE
+							.trimFrom(element).isEmpty() ? null : element);
 					break;
 				case 4:
-					edHistory.setPrevious(element);
+					edHistory.setPrevious(CharMatcher.WHITESPACE
+							.trimFrom(element).isEmpty() ? null : element);
 				}
 			}
 
@@ -256,6 +264,10 @@ public class ForexPro implements HarvestLocation {
 	private Date extractReleaseDateForHistoricalDetails(
 			String releaseDateAsString) {
 		logger.info("Release Date : " + releaseDateAsString);
+		
+		if(releaseDateAsString.equalsIgnoreCase("Noresultsfound")){
+			return null;
+		}
 
 		/*
 		 * May is inconsistent, this if statement normalises the data, see:
@@ -276,8 +288,8 @@ public class ForexPro implements HarvestLocation {
 		DateTime releaseDate = new DateTime(year, monthAsInt, day, HOUR_OF_DAY,
 				MINUTE_OF_HOUR, TIMEZONE);
 		return releaseDate.toDate();
-	}
-
+		}
+	
 	public EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,
 			String eventId) throws IOException {
 		setConnObj(constructUrlForMoreEventDetails(eventId));
@@ -303,8 +315,8 @@ public class ForexPro implements HarvestLocation {
 		return edIndicator;
 	}
 
-	private EdCountry getEdCountry(String eventCountry) {
-		return edCountryDAOImpl.findByName(eventCountry);
+	private EdCountry getEdCountry(String eventCountry, String eventName) {
+		return edCountryDAOImpl.findByNames(eventCountry, eventName);
 	}
 
 	private String getEventIdAsString(String eventId) {

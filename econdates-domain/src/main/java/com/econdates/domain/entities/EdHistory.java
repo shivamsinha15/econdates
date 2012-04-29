@@ -56,7 +56,7 @@ public class EdHistory {
 	@Column(name = "edh_previous")
 	private String previous;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "edh_indicator_id")
 	private EdIndicator edIndicator;
 
@@ -128,11 +128,16 @@ public class EdHistory {
 		this.previous = previous;
 	}
 
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof EdHistory) {
 			final EdHistory other = (EdHistory) obj;
-			return Objects.equal(actual, other.actual) && Objects.equal(consensus, other.consensus);
+			return Objects.equal(actual, other.actual)
+					&& Objects.equal(consensus, other.consensus)
+					&& Objects.equal(revised, other.revised)
+					&& Objects.equal(previous, other.previous)
+					&& Objects.equal(edIndicator, other.edIndicator);
 		} else {
 			return false;
 		}
@@ -140,26 +145,7 @@ public class EdHistory {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(actual, consensus);
+		return Objects.hashCode(actual, consensus, revised, revised,
+				edIndicator);
 	}
-	
-//	@Override
-//	public boolean equals(final Object obj) {
-//		if (obj instanceof EdHistory) {
-//			final EdHistory other = (EdHistory) obj;
-//			return Objects.equal(actual, other.actual)
-//					&& Objects.equal(consensus, other.consensus)
-//					&& Objects.equal(revised, other.revised)
-//					&& Objects.equal(previous, other.previous)
-//					&& Objects.equal(edIndicator, other.edIndicator);
-//		} else {
-//			return false;
-//		}
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		return Objects.hashCode(actual, consensus, revised, revised,
-//				edIndicator);
-//	}
 }

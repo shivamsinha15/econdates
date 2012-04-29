@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.MutableDateTime;
 import org.joda.time.chrono.GregorianChronology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,20 +27,22 @@ import com.econdates.domain.persistance.EdRegionDAO;
 @Service
 public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
+	private static final String EURO_ZONE = "Euro Zone";
 	private boolean isCountryDataInit = false;
 	private boolean isRegionDataInit = false;
 	private boolean isCityDataInit = false;
 	private boolean isHolidayDAOInit = false;
+	private boolean isEuroZoneAsCountryDataInit = false;
 	private boolean isIndicatorDAOInit = false;
 	private boolean isHistoryDAOInt = false;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EconDateInitDatabaseImpl.class);
-	private static final int END_YEAR = 2009;
-	private static final int END_MONTH = 1;
-	private static final int END_DAY_OF_MONTH = 1;
+	private static final int END_YEAR = 2012;
+	private static final int END_MONTH = 4;
+	private static final int END_DAY_OF_MONTH = 25;
 	private static final int ONE_DAY = 1;
-	
+
 	//
 	private static final long COUNTRY_ID = 14;
 	private static final String COUNTRY_NAME = "Australia";
@@ -90,16 +93,20 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 								edIndicator.getImportance());
 
 				if (dbEdIndicator == null) {
-					edIndicatorDAOImpl.saveOrUpdate(edIndicator);
+					edIndicatorDAOImpl.persist(edIndicator);
 				}
 
 				// for each EdHistory determine if its in the database if not
 				// persist
 				for (EdHistory edHistory : edIndicator.getEdHistories()) {
-					edHistoryDAOImpl.findByEdHistory(edHistory);
+					EdHistory dbEdHistory = edHistoryDAOImpl
+							.findByEdHistory(edHistory);
+					if (!edHistory.equals(dbEdHistory)) {
+						edHistoryDAOImpl.persist(edHistory);
+					}
 				}
 			}
-			startDate.minusDays(ONE_DAY);
+			startDate = startDate.minusDays(ONE_DAY);
 		}
 	}
 
@@ -153,6 +160,27 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	}
 
+	public void initEuroZoneAsCountry() {
+		EdCountry edCountry = edCountryDAOImpl.findByName(EURO_ZONE);
+		if (edCountry == null) {
+			EdCountry euroZone = new EdCountry();
+			euroZone.setCountryName(EURO_ZONE);
+			euroZone.setCurrencyCode("EUR");
+			euroZone.setCurrencyName("Euros");
+			edCountryDAOImpl.merge(euroZone);
+		}
+		isEuroZoneAsCountryDataInit();
+	}
+
+	public boolean isEuroZoneAsCountryDataInit() {
+		EdCountry edCountry = edCountryDAOImpl.findByName(EURO_ZONE);
+		if (edCountry != null) {
+			setEuroZoneAsCountryDataInit(true);
+			LOG.info("Euro Zone has been initalised");
+		}
+		return isEuroZoneAsCountryDataInit;
+	}
+
 	public boolean isCountryDataInit() {
 		int countriesInDatabase = edCountryDAOImpl.findAll().size();
 
@@ -191,11 +219,13 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 		}
 		return isCityDataInit;
 	}
-	
-	public void setUpExampleAIGEdIndicator (){
-		EdIndicator aigIndicator = edIndicatorDAOImpl.findByNameCountryAndImportance(NAME, COUNTRY_ID, Importance.Low);
-		
-		if(aigIndicator==null){
+
+	public void setUpExampleAIGEdIndicator() {
+		EdIndicator aigIndicator = edIndicatorDAOImpl
+				.findByNameCountryAndImportance(NAME, COUNTRY_ID,
+						Importance.Low);
+
+		if (aigIndicator == null) {
 			EdIndicator edIndicator = new EdIndicator();
 			edIndicator.setName(NAME);
 			edIndicator.setEdCountry(edCountryDAOImpl.findByName(COUNTRY_NAME));
@@ -215,6 +245,10 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	private void setCountryDataInit(boolean isCountryDataInit) {
 		this.isCountryDataInit = isCountryDataInit;
+	}
+
+	public void setEuroZoneAsCountryDataInit(boolean isEuroZoneAsCountryDataInit) {
+		this.isEuroZoneAsCountryDataInit = isEuroZoneAsCountryDataInit;
 	}
 
 }

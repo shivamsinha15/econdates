@@ -1,5 +1,7 @@
 package com.econdates.domain.persistance;
 
+import com.econdates.domain.entities.EdCountry;
+
 /**
  * A generic database access object for CRUD (Create, Read,Update & Destroy)
  * type functionality
@@ -22,6 +24,10 @@ public interface GenericDAO<T> {
 	T saveOrUpdate(T entity);
 
 	void delete(T entity);
+	
+	void merge(T entity);
+	
+	void persist(T entity);
 	
 
 }

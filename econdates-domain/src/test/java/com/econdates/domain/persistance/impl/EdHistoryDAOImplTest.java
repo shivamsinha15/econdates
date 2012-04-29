@@ -59,7 +59,7 @@ public class EdHistoryDAOImplTest {
 		expectedEdHistory = new EdHistory();
 		expectedEdHistory.setActual("40.2");
 		expectedEdHistory.setAnalysis(null);
-		expectedEdHistory.setConsensus(" ");
+		expectedEdHistory.setConsensus(null);
 		expectedEdHistory.setPrevious("43.8");
 		
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");

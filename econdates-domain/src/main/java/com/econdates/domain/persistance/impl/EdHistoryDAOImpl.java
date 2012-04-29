@@ -3,6 +3,7 @@ package com.econdates.domain.persistance.impl;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -29,8 +30,12 @@ public class EdHistoryDAOImpl extends GenericEjb3DAO<EdHistory> implements
 	}
 
 	public EdHistory findByEdHistory(EdHistory edHistory) {
-		return (EdHistory) entityManager
-				.createQuery(buildFindByEdHistoryQuery(edHistory)).getSingleResult();
+		try {
+			return (EdHistory) entityManager.createQuery(
+					buildFindByEdHistoryQuery(edHistory)).getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 
 	private String buildFindByEdHistoryQuery(EdHistory edHistory) {

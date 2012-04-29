@@ -3,6 +3,7 @@ package com.econdates.domain.persistance.impl;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -30,11 +31,16 @@ public class EdIndicatorDAOImpl extends GenericEjb3DAO<EdIndicator> implements
 
 	public EdIndicator findByNameCountryAndImportance(String name,
 			long edCountry, Importance importance) {
+		
+		try{
 		return (EdIndicator) entityManager.createQuery(
 				"from " + getEntityBeanType().getName() + " e WHERE e.name='"
 						+ name + "' AND e.edCountry ='" + edCountry
 						+ "'AND e.importance ='" + importance + "'")
 				.getSingleResult();
-	}
+		} catch (NoResultException nre){
+			return null;
+		}
 
+	}
 }
