@@ -2,10 +2,10 @@ package com.econdates.dataharvesterengine;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.joda.time.chrono.GregorianChronology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.econdates.domain.entities.EdCity;
 import com.econdates.domain.entities.EdCountry;
 import com.econdates.domain.entities.EdHistory;
+import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.entities.EdRegion;
@@ -37,12 +38,8 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EconDateInitDatabaseImpl.class);
-	private static final int END_YEAR = 2012;
-	private static final int END_MONTH = 4;
-	private static final int END_DAY_OF_MONTH = 25;
-	private static final int ONE_DAY = 1;
 
-	//
+	private static final int ONE_DAY = 1;
 	private static final long COUNTRY_ID = 14;
 	private static final String COUNTRY_NAME = "Australia";
 	private static final String NAME = "AIG Construction Index";
@@ -61,7 +58,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	@Autowired
 	EdHistoryDAO edHistoryDAOImpl;
-	
+
 	@Autowired
 	EdHolidayDAO edHolidayDAOImpl;
 
@@ -70,35 +67,32 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	@Autowired
 	HarvestLocation forexPro;
-	
-	public void initHolidayData() {
-		if(!isHolidayDataInit()){
-			
-			// ToDo
-			
-			
+
+	public void initHolidayData(LocalDate startDate, LocalDate endDate)
+			throws IOException {
+		if (!isHolidayDataInit()) {
+			while (startDate.isAfter(endDate)) {
+
+				List<EdHoliday> edHolidays = forexPro
+						.getEdHolidaysForASingleDay(startDate);
+				for (EdHoliday edHoliday : edHolidays) {
+					edHolidayDAOImpl.persist(edHoliday);
+				}
+				startDate = startDate.minusDays(ONE_DAY);
+			}
 		}
-		
 	}
 
-	
-	
-
-	public void initIndicatorAndHistoryData() throws IOException {
-
-		// use current date and iterate backwards to 2009
-		LocalDate startDate = new LocalDate(
-				GregorianChronology.getInstanceUTC());
-		LocalDate endDate = new LocalDate(END_YEAR, END_MONTH,
-				END_DAY_OF_MONTH, GregorianChronology.getInstanceUTC());
+	public void initIndicatorAndHistoryData(LocalDate startDate,
+			LocalDate endDate) throws IOException {
+		forexPro.setAttachHistoricalDataToIndicators(true);
+		forexPro.setAttachMoreDetailsToIndicators(true);
 		if (!isIndicatorAndHistoryDataInit()) {
-			while (!startDate.equals(endDate)) {
+			while (startDate.isAfter(endDate)) {
 				// for a date get all the Indicators and the associated
 				// EdHistories
 				List<EdIndicator> edIndicators = forexPro
-						.getEconomicIndicatorsForSingleDay(startDate
-								.toDateTimeAtCurrentTime(DateTimeZone
-										.forID("Etc/UTC")));
+						.getEconomicIndicatorsForSingleDay(startDate);
 
 				// for each indicator determine if it is in the database if not
 				// persist
@@ -111,24 +105,39 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 					if (dbEdIndicator == null) {
 						edIndicatorDAOImpl.persist(edIndicator);
 					}
-
-					// for each EdHistory determine if its in the database if
-					// not
-					// persist
-					for (EdHistory edHistory : edIndicator.getEdHistories()) {
-						EdHistory dbEdHistory = edHistoryDAOImpl
-								.findByEdHistory(edHistory);
-						if (!edHistory.equals(dbEdHistory)) {
-							edHistoryDAOImpl.persist(edHistory);
-						}
-					}
+					validateAndPersistHistoricalData(edIndicator
+							.getEdHistories());
 				}
 				startDate = startDate.minusDays(ONE_DAY);
 			}
 		}
 	}
 
+	public void validateAndPersistHistoricalData(Set<EdHistory> edHistories) {
 
+		EdHistory nextEdHistory;
+
+		TreeSet<EdHistory> sortedSetHistories = new TreeSet<EdHistory>();
+		sortedSetHistories.addAll(edHistories);
+
+		for (EdHistory currentEdHistory : sortedSetHistories) {
+			nextEdHistory = sortedSetHistories.higher(currentEdHistory);
+			boolean valid = false;
+
+			if (!(nextEdHistory == null)) {
+				valid = ((currentEdHistory.getActual().equals(
+						nextEdHistory.getPrevious()) || currentEdHistory
+						.getActual().equals(nextEdHistory.getRevised())));
+			}
+
+			EdHistory dbEdHistory = edHistoryDAOImpl
+					.findByEdHistory(currentEdHistory);
+			if (dbEdHistory == null) {
+				currentEdHistory.setValidated(valid);
+				edHistoryDAOImpl.persist(currentEdHistory);
+			}
+		}
+	}
 
 	public void initCountryData() {
 		List<EdCountry> edCountries = edCountryDAOImpl.findAll();
@@ -268,7 +277,8 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	}
 
 	public boolean isIndicatorAndHistoryDataInit() {
-		if((edHistoryDAOImpl.findOne()!= null) && (edIndicatorDAOImpl.findOne()!=null)){
+		if ((edHistoryDAOImpl.findOne() != null)
+				&& (edIndicatorDAOImpl.findOne() != null)) {
 			setIndicatorAndHistoryDAOInit(true);
 		}
 		return isIndicatorAndHistoryDAOInit;
@@ -280,13 +290,14 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	}
 
 	public boolean isHolidayDataInit() {
-		
+		if (edHolidayDAOImpl.findOne() != null) {
+			setHolidayDataInit(true);
+		}
 		return isHolidayDataInit;
 	}
 
 	public void setHolidayDataInit(boolean isHolidayDataInit) {
 		this.isHolidayDataInit = isHolidayDataInit;
 	}
-
 
 }

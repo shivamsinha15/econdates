@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -34,6 +35,7 @@ import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdHistoryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Strings;
 
 @Service
 public class ForexPro implements HarvestLocation {
@@ -52,6 +54,9 @@ public class ForexPro implements HarvestLocation {
 	private final Logger logger = LoggerFactory.getLogger(ForexPro.class);
 	private final static int ARRAY_OFFSET = 1;
 	private Connection connObj;
+
+	private boolean attachHistoricalDataToIndicators = false;
+	private boolean attachMoreDetailsToIndicators = false;
 
 	private static final int HOUR_OF_DAY = 0;
 	private static final int MINUTE_OF_HOUR = 0;
@@ -105,7 +110,47 @@ public class ForexPro implements HarvestLocation {
 		return isValidDocument;
 	}
 
-	public List<EdIndicator> getEconomicIndicatorsForSingleDay(DateTime day)
+	public void populateIndicatorValuesForLatestData(EdHistory toBeReleasedData)
+			throws IOException {
+		setAttachHistoricalDataToIndicators(false);
+		this.attachMoreDetailsToIndicators = false;
+		List<EdIndicator> releaseDateIndicators = getEconomicIndicatorsForSingleDay(LocalDate
+				.fromDateFields(toBeReleasedData.getReleaseDate()));
+		for (EdIndicator releaseDateIndicator : releaseDateIndicators) {
+			if (releaseDateIndicator.equals(toBeReleasedData.getEdIndicator())) {
+
+				EdIndicator toBeReleasedIndicator = toBeReleasedData
+						.getEdIndicator();
+				LocalDate toBeReleasedDate = LocalDate
+						.fromDateFields(toBeReleasedData.getReleaseDate());
+
+				EdHistory currentReleaseData = getEdIndicatorValuesByDate(
+						toBeReleasedIndicator, toBeReleasedDate);
+				toBeReleasedData.setActual(currentReleaseData.getActual());
+				toBeReleasedData
+						.setConsensus(currentReleaseData.getConsensus());
+				toBeReleasedData.setPrevious(currentReleaseData.getPrevious());
+				toBeReleasedData.setRevised(currentReleaseData.getRevised());
+				break;
+			}
+		}
+	}
+
+	public EdHistory getEdIndicatorValuesByDate(EdIndicator edIndicator,
+			LocalDate releaseDate) throws IOException {
+		List<EdIndicator> releaseDateIndicators = getEconomicIndicatorsForSingleDay(releaseDate);
+		EdHistory currentReleaseData = null;
+		for (EdIndicator releaseDateIndicator : releaseDateIndicators) {
+			if (releaseDateIndicator.equals(edIndicator)) {
+				currentReleaseData = (EdHistory) releaseDateIndicator
+						.getEdHistories().toArray()[0];
+				break;
+			}
+		}
+		return currentReleaseData;
+	}
+
+	public List<EdIndicator> getEconomicIndicatorsForSingleDay(LocalDate day)
 			throws IOException {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		logger.info("Retriving economic indicators for the date: "
@@ -116,7 +161,7 @@ public class ForexPro implements HarvestLocation {
 				getDocument(), day);
 	}
 
-	public List<EdHoliday> getEdHolidaysForASingleDay(DateTime day)
+	public List<EdHoliday> getEdHolidaysForASingleDay(LocalDate day)
 			throws IOException {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		logger.info("Retriving holidays for the date: " + day.toString(fmt));
@@ -126,15 +171,15 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	private List<EdHoliday> parseDocToRetrieveHolidaysForAParticularDay(
-			Document document, DateTime day) {
+			Document document, LocalDate day) {
 		Elements holidayRows = document.select("tbody").select("tr");
-		Iterator holidayRowIterator = holidayRows.iterator();
+		Iterator<Element> holidayRowIterator = holidayRows.iterator();
 		List<EdHoliday> edHolidays = new ArrayList<EdHoliday>();
 
 		while (holidayRowIterator.hasNext()) {
 			EdHoliday edHoliday = new EdHoliday();
 			Element elem = (Element) holidayRowIterator.next();
-			Elements holidayRowCells = holidayRows.select("td");
+			Elements holidayRowCells = elem.select("td");
 
 			int index = 0;
 			for (Element holidayCell : holidayRowCells) {
@@ -152,6 +197,9 @@ public class ForexPro implements HarvestLocation {
 				case 3:
 					// This cell contains the country.
 					String countryName = holidayCell.select("a").text();
+					if (Strings.isNullOrEmpty(countryName)) {
+						countryName = holidayCell.text();
+					}
 					EdCountry edCountry = edCountryDAOImpl
 							.findByName(countryName);
 					edHoliday.setEdCountry(edCountry);
@@ -172,29 +220,34 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	private List<EdIndicator> parseDocumentToRetrieveIndicatorsForAParticularDay(
-			Document document, DateTime day) throws IOException {
+			Document document, LocalDate day) throws IOException {
 		Elements indicatorDetails = document.select("tr[id*=eventRowId]");
 
-		Iterator indicatorIterator = indicatorDetails.iterator();
+		Iterator<Element> indicatorIterator = indicatorDetails.iterator();
 
 		List<EdIndicator> edIndicatorsForADay = new ArrayList<EdIndicator>();
-		Set<EdHistory> edHistories = new HashSet<EdHistory>();
 
 		while (indicatorIterator.hasNext()) {
 			EdIndicator edIndicator = new EdIndicator();
+			Set<EdHistory> edHistories = new HashSet<EdHistory>();
 			Element elem = (Element) indicatorIterator.next();
 			String eventId = getEventIdAsString(elem.select(
 					"tr[id*=eventRowId]").attr("id"));
 			String eventTime = elem.select("td[id*=eventTime]").text();
-			String eventCurrency = elem.select("td[id*=eventCurrency]").text();
-			String eventCountry = elem.select("td[id*=eventCurrency]")
-					.select("span[title]").attr("title");
-			Elements entImpElement = elem.select("td[id*=eventImportance]")
-					.select("span[title]");
+
+			// String eventCurrency =
+			// elem.select("td[id*=eventCurrency]").text();
+			// Elements entImpElement =
+			// elem.select("td[id*=eventImportance]").select("span[title]");
+			String eventCountry = CharMatcher.WHITESPACE.trimFrom(elem
+					.select("td[id*=eventCurrency]").select("span[title]")
+					.attr("title"));
+
 			String eventImportance = elem.select("td[id*=eventImportance]")
 					.select("span[title]").attr("title");
 
-			String eventName = elem.select("td[id*=eventName]").text();
+			String eventName = CharMatcher.WHITESPACE.trimFrom(elem.select(
+					"td[id*=eventName]").text());
 
 			/*
 			 * More history details does not contain the most recent
@@ -204,19 +257,26 @@ public class ForexPro implements HarvestLocation {
 			 * Information: Actual, Consensus, Previous and Revised From
 			 */
 
-			String eventActual = elem.select("td[id*=eventActual]").text();
-			String eventForecast = elem.select("td[id*=eventForecast]").text();
-			String eventPrevious = elem.select("td[id*=eventPrevious]").text();
-			String eventRevisedFrom = elem.select("td[id*=eventRevisedFrom}")
-					.text();
+			String eventActual = CharMatcher.WHITESPACE.trimFrom(elem.select(
+					"td[id*=eventActual]").text());
+			String eventForecast = CharMatcher.WHITESPACE.trimFrom(elem.select(
+					"td[id*=eventForecast]").text());
+			String eventPrevious = CharMatcher.WHITESPACE.trimFrom(elem.select(
+					"td[id*=eventPrevious]").text());
+			String rawRevised = CharMatcher.WHITESPACE.trimFrom(elem
+					.select("td[id*=eventRevisedFrom]").select("span[title]")
+					.attr("title"));
+			String eventRevisedFrom = cleanRevised(rawRevised);
 
 			if (!eventId.isEmpty() && !eventName.isEmpty()) {
 
 				edIndicator.setName(eventName);
 				edIndicator.setImportance(getImportanceAsEnum(eventImportance));
 				String[] time = eventTime.split(":");
-				int hour = Integer.parseInt(time[0]);
-				int min = Integer.parseInt(time[1]);
+				int hour = Integer.parseInt(CharMatcher.WHITESPACE
+						.trimFrom(time[0]));
+				int min = Integer.parseInt(CharMatcher.WHITESPACE
+						.trimFrom(time[1]));
 				edIndicator.setReleaseTime(new LocalTime(hour, min)
 						.toDateTimeToday(DateTimeZone.forID("Etc/UTC"))
 						.toDate());
@@ -228,29 +288,33 @@ public class ForexPro implements HarvestLocation {
 				 * More Details Information: Release URL, Event Source Report,
 				 * Event Description Historical.
 				 */
+				if (attachMoreDetailsToIndicators) {
+					getMoreDetailsByEventId(edIndicator, eventId);
+				}
 
-				getMoreDetailsByEventId(edIndicator, eventId);
-
-				EdHistory currentFigures = new EdHistory();
-				currentFigures.setActual(eventActual);
-				currentFigures.setConsensus(CharMatcher.WHITESPACE.trimFrom(
-						eventForecast).isEmpty() ? null : eventActual);
-				currentFigures.setPrevious(eventPrevious);
-				currentFigures.setRevised(CharMatcher.WHITESPACE.trimFrom(
+				EdHistory currentData = new EdHistory();
+				currentData.setActual(eventActual);
+				currentData.setConsensus(CharMatcher.WHITESPACE.trimFrom(
+						eventForecast).isEmpty() ? null : eventForecast);
+				currentData.setPrevious(eventPrevious);
+				currentData.setRevised(CharMatcher.WHITESPACE.trimFrom(
 						eventRevisedFrom).isEmpty() ? null : eventRevisedFrom);
-				currentFigures.setReleaseDate(day.toDate());
-				currentFigures.setEdIndicator(edIndicator);
+				currentData.setReleaseDate(day.toDate());
+				currentData.setEdIndicator(edIndicator);
 
 				/*
 				 * Details: Release Date, Actual, Previous, Consensus. Note it
 				 * does not contain current released information
 				 */
+				if (attachHistoricalDataToIndicators) {
+					edHistories = getHistoricalDetailsByEventId(edIndicator,
+							eventId);
 
-				edHistories = getHistoricalDetailsByEventId(edIndicator,
-						eventId);
-				edHistories.add(currentFigures);
+				}
 
+				edHistories.add(currentData);
 				edIndicator.setEdHistories(edHistories);
+
 				// logger.info("Event WebId: " + eventId);
 				// logger.info("Event Time: " + eventTime);
 				// logger.info("Event Currency: " + eventCurrency);
@@ -269,6 +333,14 @@ public class ForexPro implements HarvestLocation {
 		// edIndicatorDAOImpl.persistCollection(edIndicatorsForADay);
 		// edHistoryDAOImpl.persistCollection(edHistories);
 		return edIndicatorsForADay;
+	}
+
+	private String cleanRevised(String rawRevised) {
+		String cleanedRevised = rawRevised;
+		if (rawRevised.contains("Revised From")) {
+			cleanedRevised = rawRevised.replace("Revised From", "");
+		}
+		return CharMatcher.WHITESPACE.trimFrom(cleanedRevised);
 	}
 
 	public Set<EdHistory> getHistoricalDetailsByEventId(
@@ -306,6 +378,17 @@ public class ForexPro implements HarvestLocation {
 				case 4:
 					edHistory.setPrevious(CharMatcher.WHITESPACE.trimFrom(
 							element).isEmpty() ? null : element);
+					break;
+				case 5:
+					String rawRevised = CharMatcher.WHITESPACE
+							.trimFrom(historicalDetailCell
+									.select("span[title]").attr("title"));
+
+					edHistory.setRevised(CharMatcher.WHITESPACE.trimFrom(
+							cleanRevised(rawRevised)).isEmpty() ? null
+							: cleanRevised(rawRevised));
+					break;
+
 				}
 			}
 
@@ -390,7 +473,7 @@ public class ForexPro implements HarvestLocation {
 		}
 	}
 
-	private String constructUrlStringToGetIndicatorsAParticularDay(DateTime day) {
+	private String constructUrlStringToGetIndicatorsAParticularDay(LocalDate day) {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		String urlForDate = "http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=filter&elemntsValues=dateFrom%3D"
 				+ day.toString(fmt)
@@ -417,7 +500,7 @@ public class ForexPro implements HarvestLocation {
 		return urlForHistoricalEventDetail;
 	}
 
-	private String constructUrlStringToGetHolidays(DateTime day) {
+	private String constructUrlStringToGetHolidays(LocalDate day) {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		String urlForHoliday = "http://www.forexpros.com/common/ajax_func.php?dates="
 				+ day.toString(fmt)
@@ -438,6 +521,16 @@ public class ForexPro implements HarvestLocation {
 				.userAgent(
 						"User-A gent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:8.0) Gecko/20100101 Firefox/8.0");
 
+	}
+
+	public void setAttachHistoricalDataToIndicators(
+			boolean attachHistoricalDataToIndicators) {
+		this.attachHistoricalDataToIndicators = attachHistoricalDataToIndicators;
+	}
+
+	public void setAttachMoreDetailsToIndicators(
+			boolean attachMoreDetailsToIndicators) {
+		this.attachMoreDetailsToIndicators = attachMoreDetailsToIndicators;
 	}
 
 }

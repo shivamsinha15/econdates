@@ -1,6 +1,5 @@
 package com.econdates.domain.persistance;
 
-import com.econdates.domain.entities.EdCountry;
 
 /**
  * A generic database access object for CRUD (Create, Read,Update & Destroy)

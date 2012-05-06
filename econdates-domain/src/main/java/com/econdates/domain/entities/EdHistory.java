@@ -14,15 +14,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDate;
+
 import com.google.common.base.Objects;
 
 /**
  * @author shivamsinha
- *
+ * 
  */
 @Entity
 @Table(name = EdHistory.TABLE_NAME)
-public class EdHistory {
+public class EdHistory implements Comparable {
 
 	public static final String TABLE_NAME = "ed_history";
 
@@ -50,6 +53,11 @@ public class EdHistory {
 	@Column(name = "edh_previous")
 	private String previous;
 
+	@Column(nullable = false, name = "edh_validated")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean validated;
+	
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "edh_indicator_id")
 	private EdIndicator edIndicator;
@@ -118,14 +126,11 @@ public class EdHistory {
 		this.previous = previous;
 	}
 
-
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof EdHistory) {
 			final EdHistory other = (EdHistory) obj;
-			return Objects.equal(actual, other.actual)
-					&& Objects.equal(consensus, other.consensus)
-					&& Objects.equal(revised, other.revised)
+			return Objects.equal(releaseDate, other.releaseDate)
 					&& Objects.equal(previous, other.previous)
 					&& Objects.equal(edIndicator, other.edIndicator);
 		} else {
@@ -138,4 +143,32 @@ public class EdHistory {
 		return Objects.hashCode(actual, consensus, revised, revised,
 				edIndicator);
 	}
+
+	@Override
+	public String toString() {
+		return "EdHistory [actual=" + actual + ", consensus=" + consensus
+				+ ", revised=" + revised + ", analysis=" + analysis
+				+ ", releaseDate=" + releaseDate + "]";
+	}
+
+	public int compareTo(Object other) {
+		LocalDate releaseDate = LocalDate.fromDateFields(this.releaseDate);
+		LocalDate otherReleaseDate = LocalDate
+				.fromDateFields(((EdHistory) other).getReleaseDate());
+		if (releaseDate.isBefore(otherReleaseDate)) {
+			return -1;
+		} else if (releaseDate.isAfter(otherReleaseDate)) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public boolean isValidated() {
+		return validated;
+	}
+
+	public void setValidated(boolean validated) {
+		this.validated = validated;
+	}
+
 }
