@@ -20,9 +20,9 @@ import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.entities.EdRegion;
 import com.econdates.domain.persistance.EdCityDAO;
 import com.econdates.domain.persistance.EdCountryDAO;
-import com.econdates.domain.persistance.EdHistoryDAO;
 import com.econdates.domain.persistance.EdHolidayDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
+import com.econdates.domain.persistance.EdIndicatorValueDAO;
 import com.econdates.domain.persistance.EdRegionDAO;
 
 @Service
@@ -57,7 +57,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	EdIndicatorDAO edIndicatorDAOImpl;
 
 	@Autowired
-	EdHistoryDAO edHistoryDAOImpl;
+	EdIndicatorValueDAO edIndicatorValueDAOImpl;
 
 	@Autowired
 	EdHolidayDAO edHolidayDAOImpl;
@@ -130,11 +130,11 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 						.getActual().equals(nextEdHistory.getRevised())));
 			}
 
-			EdHistory dbEdHistory = edHistoryDAOImpl
-					.findByEdHistory(currentEdHistory);
+			EdHistory dbEdHistory = (EdHistory) edIndicatorValueDAOImpl
+					.findByEdIndicatorValue(currentEdHistory, EdHistory.class);
 			if (dbEdHistory == null) {
 				currentEdHistory.setValidated(valid);
-				edHistoryDAOImpl.persist(currentEdHistory);
+				edIndicatorValueDAOImpl.persist(currentEdHistory);
 			}
 		}
 	}
@@ -240,7 +240,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 					+ citiesInDatabase + " Cities");
 			setCityDataInit(true);
 		} else {
-
+			// todo
 		}
 		return isCityDataInit;
 	}
@@ -255,7 +255,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 			edIndicator.setName(NAME);
 			edIndicator.setEdCountry(edCountryDAOImpl.findByName(COUNTRY_NAME));
 			edIndicator.setImportance(Importance.Low);
-			edIndicatorDAOImpl.saveOrUpdate(aigIndicator);
+			edIndicatorDAOImpl.saveOrUpdate(edIndicator);
 		}
 	}
 
@@ -277,8 +277,8 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	}
 
 	public boolean isIndicatorAndHistoryDataInit() {
-		if ((edHistoryDAOImpl.findOne() != null)
-				&& (edIndicatorDAOImpl.findOne() != null)) {
+		if ((edIndicatorValueDAOImpl.getMaxEntity() != null)
+				&& (edIndicatorDAOImpl.getMaxEntity() != null)) {
 			setIndicatorAndHistoryDAOInit(true);
 		}
 		return isIndicatorAndHistoryDAOInit;
@@ -290,7 +290,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	}
 
 	public boolean isHolidayDataInit() {
-		if (edHolidayDAOImpl.findOne() != null) {
+		if (edHolidayDAOImpl.getMaxEntity() != null) {
 			setHolidayDataInit(true);
 		}
 		return isHolidayDataInit;

@@ -80,7 +80,6 @@ public class EconDateInitDatabaseImplTest {
 	}
 	
 	@Test 
-	@Rollback(true)
 	public void validateHistoricalData() throws IOException{
 		LocalDate startDate = new LocalDate(2012, 4,
 				8, GregorianChronology.getInstanceUTC());

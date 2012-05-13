@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.econdates.util.GeneralUtil;
 import com.google.common.base.Objects;
 
 /**
@@ -33,7 +34,7 @@ public class EdIndicator {
 
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String TABLE_NAME = "ed_indicator";
 
 	public enum Importance {
@@ -48,6 +49,38 @@ public class EdIndicator {
 		public String getString() {
 			return description;
 		}
+	}
+
+	public EdIndicator() {
+	}
+
+	public EdIndicator(long id, String name, Importance importance,
+			String description, Date releaseTime, Integer releaseFrequency,
+			String releaseUrl, String sourceReport, Date lastUpdated,
+			EdCountry edCountry) {
+		this.id = id;
+		this.name = name;
+		this.importance = importance;
+		this.description = description;
+		this.releaseTime = GeneralUtil.ifDateNullReturnNull(releaseTime);
+		this.releaseFrequency = releaseFrequency;
+		this.releaseUrl = releaseUrl;
+		this.sourceReport = sourceReport;
+		this.lastUpdated = GeneralUtil.ifDateNullReturnNull(lastUpdated);
+		this.edCountry = new EdCountry(edCountry);
+	}
+
+	public EdIndicator(EdIndicator edIndicator) {
+		this(GeneralUtil.ifNullReturnNull(edIndicator.getId()), GeneralUtil
+				.ifNullReturnNull(edIndicator.getName()), GeneralUtil
+				.ifNullReturnNull(edIndicator.getImportance()), GeneralUtil
+				.ifNullReturnNull(edIndicator.getDescription()), GeneralUtil
+				.ifNullReturnNull(edIndicator.getReleaseTime()), GeneralUtil
+				.ifNullReturnNull(edIndicator.getReleaseFrequency()),
+				GeneralUtil.ifNullReturnNull(edIndicator.getReleaseUrl()),
+				GeneralUtil.ifNullReturnNull(edIndicator.getSourceReport()),
+				GeneralUtil.ifNullReturnNull(edIndicator.getLastUpdated()),
+				GeneralUtil.ifNullReturnNull(edIndicator.getEdCountry()));
 	}
 
 	@Id
@@ -95,8 +128,11 @@ public class EdIndicator {
 	@JoinColumn(name = "edi_country_id")
 	private EdCountry edCountry;
 
-	@OneToMany(mappedBy="edIndicator")
+	@OneToMany(mappedBy = "edIndicator")
 	private Set<EdHistory> edHistories;
+
+	@OneToMany(mappedBy = "edIndicator")
+	private Set<EdScheduled> edScheduled;
 
 	public Long getId() {
 		return id;
@@ -204,14 +240,14 @@ public class EdIndicator {
 
 	@Override
 	public boolean equals(final Object obj) {
-		  if(obj instanceof EdIndicator){
-		        final EdIndicator other = (EdIndicator) obj;
-		        return Objects.equal(name, other.name)
-		            && Objects.equal(edCountry, other.edCountry)
-		            && Objects.equal(importance, other.importance);
-		    } else{
-		        return false;
-		    }
+		if (obj instanceof EdIndicator) {
+			final EdIndicator other = (EdIndicator) obj;
+			return Objects.equal(name, other.name)
+					&& Objects.equal(edCountry, other.edCountry)
+					&& Objects.equal(importance, other.importance);
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -229,6 +265,22 @@ public class EdIndicator {
 				+ releaseUrl + ", releasePage=" + releasePage
 				+ ", sourceReport=" + sourceReport + ", lastUpdated="
 				+ lastUpdated + " edi_country_id = " + edCountry.getId() + "]";
+	}
+
+	public Integer getReleaseFrequency() {
+		return releaseFrequency;
+	}
+
+	public void setReleaseFrequency(Integer releaseFrequency) {
+		this.releaseFrequency = releaseFrequency;
+	}
+
+	public Set<EdScheduled> getEdScheduled() {
+		return edScheduled;
+	}
+
+	public void setEdScheduled(Set<EdScheduled> edScheduled) {
+		this.edScheduled = edScheduled;
 	}
 
 }

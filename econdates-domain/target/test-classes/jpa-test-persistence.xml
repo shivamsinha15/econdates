@@ -10,10 +10,10 @@
 		<class>com.econdates.domain.entities.EdCity</class>
 		<class>com.econdates.domain.entities.EdCountry</class>
 		<class>com.econdates.domain.entities.EdHistory</class>
+		<class>com.econdates.domain.entities.EdScheduled</class>
 		<class>com.econdates.domain.entities.EdHoliday</class>
 		<class>com.econdates.domain.entities.EdIndicator</class>
 		<class>com.econdates.domain.entities.EdRegion</class>
 		<class>com.econdates.domain.entities.EdUser</class>
-		<class>com.econdates.domain.entities.EdUserIndicator</class>
 	</persistence-unit>
 </persistence>

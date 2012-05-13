@@ -13,7 +13,7 @@ import com.econdates.domain.persistance.GenericDAO;
 
 public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 
-	private final Class<T> entityBeanType;
+	private Class<T> entityBeanType;
 	protected EntityManager entityManager;
 
 	@SuppressWarnings("unchecked")
@@ -26,18 +26,23 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 		return entityBeanType;
 	}
 
+	@SuppressWarnings("unchecked")
+	public Class<T> setEntityBeanType(Class<?> returnType) {
+		return this.entityBeanType = (Class<T>) returnType;
+	}
+
 	public T findById(Long id) {
 		return entityManager.find(getEntityBeanType(), id);
 	}
 
 	public T saveOrUpdate(T entity) {
-
 		persist(entity);
 		return entity;
 	}
 
 	public void delete(T entity) {
 		entityManager.remove(entity);
+		// entityManager.flush();
 	}
 
 	/**
@@ -64,7 +69,7 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	 * relationship to Y has been annotated with the cascade element value
 	 * cascade=PERSIST or cascade=ALL, the persist operation is applied to Y.
 	 */
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void persistCollection(Collection<T> entities) {
 		for (T t : entities) {
 			System.out.println("Persisting: " + t.toString());
@@ -73,7 +78,8 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 
 	}
 
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	// @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	// entityManager.flush();
 	public void persist(T t) {
 		entityManager.persist(t);
 	}
@@ -81,56 +87,46 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	/**
 	 * MyEntity e = new MyEntity();
 	 * 
-	 * // scenario 1 // tran starts em.persist(e); 
-	 *  e.setSomeField(someValue); 
-	 *  // tran ends, and the row for someField is updated in the database
+	 * // scenario 1 // tran starts em.persist(e); e.setSomeField(someValue); //
+	 * tran ends, and the row for someField is updated in the database
 	 * 
 	 * 
-	 * // scenario 2
-	 * // tran starts 
-	 * e = new MyEntity(); em.merge(e);
-	 * e.setSomeField(anotherValue); 
-	 * // tran ends but the row for someField is not updated in the database (you made the changes *after* merging
+	 * // scenario 2 / / tran starts e = new MyEntity(); em.merge(e);
+	 * e.setSomeField(anotherValue); // tran ends but the row for someField is
+	 * not updated in the database (you made the changes *after* merging
 	 * 
 	 * 
-	 * // scenario 3 
-	 * // tran starts 
-	 * e = new MyEntity(); 
-	 * MyEntity e2 = em.merge(e); 
-	 * e2.setSomeField(anotherValue); 
-	 * // tran ends and the row for someField is updated (the changes were made to e2, not e)
+	 * // scenario 3 // tran starts e = new MyEntity(); MyEntity e2
+	 * =em.merge(e); e2.setSomeField(anotherValue); // tran ends and the row for
+	 * someField is updated (the changes were made to e2, not e)
 	 * 
 	 */
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void mergeCollection(Collection<T> entities) {
 		for (T t : entities) {
 			System.out.println("Merging: " + t.toString());
 			merge(t);
 		}
 	}
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void merge(T entity){
+
+	public void merge(T entity) {
 		entityManager.merge(entity);
-		entityManager.flush();
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public T findOne() {
-		try{
-		return  (T) entityManager.createQuery(
-				"from " + getEntityBeanType().getName()).setMaxResults(1).getSingleResult();
-		} catch(NoResultException nre){
+	public T getMaxEntity() {
+		try {
+			return (T) entityManager
+					.createQuery("from " + getEntityBeanType().getName())
+					.setMaxResults(1).getSingleResult();
+		} catch (NoResultException nre) {
 			return null;
 		}
 	}
 
-
 	protected EntityManager getEntityManager() {
 		return entityManager;
 	}
-	
-	
 
 	public abstract void setEntityManager(EntityManager entityManager);
 

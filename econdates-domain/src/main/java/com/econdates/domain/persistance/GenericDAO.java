@@ -1,6 +1,5 @@
 package com.econdates.domain.persistance;
 
-
 /**
  * A generic database access object for CRUD (Create, Read,Update & Destroy)
  * type functionality
@@ -9,13 +8,13 @@ package com.econdates.domain.persistance;
  * 
  */
 
-
 public interface GenericDAO<T> {
 
-	
 	/**
 	 * Returns the instance of the item from the database code
-	 * @param id - Primary Key id of item
+	 * 
+	 * @param id
+	 *            - Primary Key id of item
 	 * @return The item read from the database
 	 */
 	T findById(Long id);
@@ -23,11 +22,11 @@ public interface GenericDAO<T> {
 	T saveOrUpdate(T entity);
 
 	void delete(T entity);
-	
+
 	void merge(T entity);
-	
+
 	void persist(T entity);
-	
-	T findOne();
+
+	T getMaxEntity();
 
 }

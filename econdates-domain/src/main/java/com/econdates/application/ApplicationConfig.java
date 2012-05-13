@@ -2,9 +2,6 @@ package com.econdates.application;
 
 import javax.xml.ws.WebServiceClient;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 //<context:component-scan base-package="org.jboss.spring.samples.orders.domain"/>

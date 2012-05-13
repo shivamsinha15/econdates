@@ -63,13 +63,42 @@ public class EdCountry {
 	@Column(name = "edc_iso_3")
 	private String iso3;
 
-	@OneToMany(mappedBy="edCountry")
+	@OneToMany(mappedBy = "edCountry")
 	Collection<EdHoliday> edHolidays;
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = com.econdates.domain.entities.EdRegion.class)
 	@JoinColumn(name = "edr_country_id")
 	Collection<EdRegion> edRegions;
-	
+
+	public EdCountry() {
+	}
+
+	public EdCountry(long id, String countryName, String currencyName,
+			String currencyCode, String mobileExtension, String capital,
+			String mapReference, String nationalitySingular,
+			String nationalityPlural, String fips, String iso2, String iso3) {
+		this.id = id;
+		this.countryName = countryName;
+		this.currencyName = currencyName;
+		this.currencyCode = currencyCode;
+		this.mobileExtension = mobileExtension;
+		this.capital = capital;
+		this.mapReference = mapReference;
+		this.nationalitySingular = nationalitySingular;
+		this.nationalityPlural = nationalityPlural;
+		this.fips = fips;
+		this.iso2 = iso2;
+		this.iso3 = iso3;
+	}
+
+	public EdCountry(EdCountry edCountry) {
+		this(edCountry.getId(), edCountry.getCountryName(), edCountry
+				.getCurrencyName(), edCountry.getCurrencyCode(), edCountry
+				.getMobileExtension(), edCountry.getCapital(), edCountry
+				.getMapReference(), edCountry.getNationalitySingular(),
+				edCountry.getNationalityPlural(), edCountry.getFips(),
+				edCountry.getIso2(), edCountry.getIso3());
+	}
 
 	public long getId() {
 		return id;

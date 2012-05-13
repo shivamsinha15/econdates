@@ -11,7 +11,6 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.joda.time.chrono.GregorianChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -43,21 +42,7 @@ import com.econdates.domain.persistance.EdIndicatorDAO;
 public class ForexProTest {
 
 	private final Logger logger = LoggerFactory.getLogger(ForexPro.class);
-	private static final String NAME = "AIG Construction Index";
-	private static final LocalTime LOCAL_TIME = new LocalTime(22, 30);
-	private static final int RELEASE_DAY_WEEK = 7;
-	private static final int RELEASE_DAY_MONTH = 6;
-	private static final String URL = "http://www.aigroup.asn.au/";
-	private static final String SOURCE_REPORT = "Australian Industry Group";
-	private static final String COUNTRY = "AUSTRALIA";
 	private static final String EVENT_ID = "17226";
-
-	private static final int YEAR = 2011;
-	private static final int MONTH = 2;
-	private static final int DAY_OF_MONTH = 6;
-	private static final int HOUR_OF_DAY = 0;
-	private static final int MINUTE_OF_HOUR = 0;
-	private static final int TIMEZONE = 0;
 
 	@Autowired
 	@Qualifier("forexPro")
@@ -118,8 +103,8 @@ public class ForexProTest {
 		EdIndicator moreDetailsAboutEdIndicator = forexPro
 				.getMoreDetailsByEventId(new EdIndicator(), EVENT_ID);
 		EdIndicator expectedEdIndicator = new EdIndicator();
-		expectedEdIndicator.setSourceReport(SOURCE_REPORT);
-		expectedEdIndicator.setReleaseUrl(URL);
+		expectedEdIndicator.setSourceReport("Australian Industry Group");
+		expectedEdIndicator.setReleaseUrl("http://www.aigroup.asn.au/");
 		assertEquals(expectedEdIndicator, moreDetailsAboutEdIndicator);
 	}
 
@@ -133,7 +118,7 @@ public class ForexProTest {
 	@Test
 	public void testGetEconomicIndicatorsForSingleDay() throws IOException {
 
-		LocalDate day = new LocalDate(YEAR, MONTH, DAY_OF_MONTH);
+		LocalDate day = new LocalDate(2011, 2, 6);
 
 		List<EdIndicator> indicators = forexPro
 				.getEconomicIndicatorsForSingleDay(day);
@@ -145,19 +130,20 @@ public class ForexProTest {
 
 	// http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=filter&elemntsValues=dateFrom%3D2012-04-08%2CdateTo%3D2012-04-08%2Ccurrency%3D29%2Ccurrency%3D25%2Ccurrency%3D54%2Ccurrency%3D145%2Ccurrency%3D34%2Ccurrency%3D32%2Ccurrency%3D70%2Ccurrency%3D6%2Ccurrency%3D27%2Ccurrency%3D37%2Ccurrency%3D122%2Ccurrency%3D113%2Ccurrency%3D55%2Ccurrency%3D24%2Ccurrency%3D59%2Ccurrency%3D72%2Ccurrency%3D71%2Ccurrency%3D22%2Ccurrency%3D17%2Ccurrency%3D51%2Ccurrency%3D39%2Ccurrency%3D93%2Ccurrency%3D14%2Ccurrency%3D48%2Ccurrency%3D33%2Ccurrency%3D23%2Ccurrency%3D10%2Ccurrency%3D35%2Ccurrency%3D92%2Ccurrency%3D68%2Ccurrency%3D42%2Ccurrency%3D7%2Ccurrency%3D105%2Ccurrency%3D21%2Ccurrency%3D43%2Ccurrency%3D60%2Ccurrency%3D87%2Ccurrency%3D125%2Ccurrency%3D45%2Ccurrency%3D53%2Ccurrency%3D38%2Ccurrency%3D56%2Ccurrency%3D52%2Ccurrency%3D36%2Ccurrency%3D110%2Ccurrency%3D11%2Ccurrency%3D26%2Ccurrency%3D9%2Ccurrency%3D12%2Ccurrency%3D46%2Ccurrency%3D41%2Ccurrency%3D202%2Ccurrency%3D63%2Ccurrency%3D61%2Ccurrency%3D143%2Ccurrency%3D4%2Ccurrency%3D5%2Ccurrency%3D138%2Ccurrency%3D178%2CtimeZone%3D55%2Cdst%3Doff&timeFrame=weekly
 	@Test
-	public void testEdIndicatorValuesByDate() throws IOException{
-		LocalDate releaseDate = new LocalDate(2012,4,8);
-		
+	public void testEdIndicatorValuesByDate() throws IOException {
+		LocalDate releaseDate = new LocalDate(2012, 4, 8);
+
 		EdIndicator adjCurrentAccount = new EdIndicator();
 		adjCurrentAccount.setName("Adjusted Current Account");
 		adjCurrentAccount.setImportance(Importance.Low);
 		adjCurrentAccount.setEdCountry(edCountryDAOImpl.findByName("Japan"));
-		
-		EdHistory valuesForIndicator = forexPro.getEdIndicatorValuesByDate(adjCurrentAccount, releaseDate);
-		
-		assertEquals("0.85T",valuesForIndicator.getActual());
-		assertEquals("0.66T",valuesForIndicator.getConsensus());
-		assertEquals("0.14T",valuesForIndicator.getPrevious());
+
+		EdHistory valuesForIndicator = forexPro.getEdIndicatorValuesByDate(
+				adjCurrentAccount, releaseDate);
+
+		assertEquals("0.85T", valuesForIndicator.getActual());
+		assertEquals("0.66T", valuesForIndicator.getConsensus());
+		assertEquals("0.14T", valuesForIndicator.getPrevious());
 		assertEquals("0.120T", valuesForIndicator.getRevised());
 
 	}

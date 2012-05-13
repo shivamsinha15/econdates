@@ -32,8 +32,8 @@ import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.persistance.EdCountryDAO;
-import com.econdates.domain.persistance.EdHistoryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
+import com.econdates.domain.persistance.EdIndicatorValueDAO;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 
@@ -44,7 +44,7 @@ public class ForexPro implements HarvestLocation {
 	EdCountryDAO edCountryDAOImpl;
 
 	@Autowired
-	EdHistoryDAO edHistoryDAOImpl;
+	EdIndicatorValueDAO edIndicatorValueDAOImpl;
 
 	@Autowired
 	EdIndicatorDAO edIndicatorDAOImpl;
