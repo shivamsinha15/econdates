@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.econdates.util.GeneralUtil;
 import com.google.common.base.Objects;
 
 /**
@@ -62,25 +61,22 @@ public class EdIndicator {
 		this.name = name;
 		this.importance = importance;
 		this.description = description;
-		this.releaseTime = GeneralUtil.ifDateNullReturnNull(releaseTime);
+		this.releaseTime = (releaseTime != null ? new Date(
+				releaseTime.getTime()) : null);
 		this.releaseFrequency = releaseFrequency;
 		this.releaseUrl = releaseUrl;
 		this.sourceReport = sourceReport;
-		this.lastUpdated = GeneralUtil.ifDateNullReturnNull(lastUpdated);
+		this.lastUpdated = (lastUpdated != null ? new Date(
+				lastUpdated.getTime()) : null);
 		this.edCountry = new EdCountry(edCountry);
 	}
 
 	public EdIndicator(EdIndicator edIndicator) {
-		this(GeneralUtil.ifNullReturnNull(edIndicator.getId()), GeneralUtil
-				.ifNullReturnNull(edIndicator.getName()), GeneralUtil
-				.ifNullReturnNull(edIndicator.getImportance()), GeneralUtil
-				.ifNullReturnNull(edIndicator.getDescription()), GeneralUtil
-				.ifNullReturnNull(edIndicator.getReleaseTime()), GeneralUtil
-				.ifNullReturnNull(edIndicator.getReleaseFrequency()),
-				GeneralUtil.ifNullReturnNull(edIndicator.getReleaseUrl()),
-				GeneralUtil.ifNullReturnNull(edIndicator.getSourceReport()),
-				GeneralUtil.ifNullReturnNull(edIndicator.getLastUpdated()),
-				GeneralUtil.ifNullReturnNull(edIndicator.getEdCountry()));
+		this((edIndicator.getId()), (edIndicator.getName()), (edIndicator
+				.getImportance()), (edIndicator.getDescription()), (edIndicator
+				.getReleaseTime()), (edIndicator.getReleaseFrequency()),
+				(edIndicator.getReleaseUrl()), (edIndicator.getSourceReport()),
+				(edIndicator.getLastUpdated()), (edIndicator.getEdCountry()));
 	}
 
 	@Id

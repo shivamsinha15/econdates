@@ -44,14 +44,26 @@ public abstract class EdIndicatorValue implements Comparable<EdIndicatorValue> {
 	@Column(name = "edh_release_date")
 	protected Date releaseDate;
 
+	@Temporal(TemporalType.DATE)
+	@Column(name = "edh_updated_date")
+	protected Date updatedDate;
+
 	@Column(name = "edh_previous")
 	protected String previous;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "edh_indicator_id")
 	protected EdIndicator edIndicator;
 
 	public abstract boolean equals(final Object obj);
+
+	public Date getLastUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
+		this.updatedDate = lastUpdatedDate;
+	}
 
 	public abstract int hashCode();
 

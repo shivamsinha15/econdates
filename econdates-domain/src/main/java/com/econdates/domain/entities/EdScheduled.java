@@ -7,7 +7,6 @@ import javax.persistence.Table;
 
 import org.joda.time.LocalDate;
 
-import com.econdates.util.GeneralUtil;
 import com.google.common.base.Objects;
 
 @Entity
@@ -33,14 +32,10 @@ public class EdScheduled extends EdIndicatorValue {
 	}
 
 	public EdScheduled(EdScheduled edScheduled) {
-		this(GeneralUtil.ifNullReturnNull(edScheduled.getId()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getActual()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getAnalysis()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getConsensus()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getPrevious()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getReleaseDate()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getRevised()), GeneralUtil
-				.ifNullReturnNull(edScheduled.getEdIndicator()));
+		this((edScheduled.getId()), edScheduled.getActual(), (edScheduled
+				.getAnalysis()), (edScheduled.getConsensus()), (edScheduled
+				.getPrevious()), (edScheduled.getReleaseDate()), (edScheduled
+				.getRevised()), (edScheduled.getEdIndicator()));
 	}
 
 	@Override

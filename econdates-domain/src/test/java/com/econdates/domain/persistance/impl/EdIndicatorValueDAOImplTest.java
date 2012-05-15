@@ -48,7 +48,6 @@ public class EdIndicatorValueDAOImplTest extends
 	private EdIndicator aigIndicator;
 	private EdHistory expectedEdHistory;
 	private EdScheduled expectedEdScheduled;
-	private EdError edError;
 
 	@Autowired
 	EdIndicatorDAO edIndicatorDAOImpl;
@@ -157,9 +156,12 @@ public class EdIndicatorValueDAOImplTest extends
 		EdScheduled toBeMovedEdScheduled = (EdScheduled) edIndicatorValueDAOImpl
 				.findByEdIndicatorValue(expectedEdScheduled, EdScheduled.class);
 
+		toBeMovedEdScheduled.setActual("0.99");
+
 		edIndicatorValueDAOImpl
 				.moveFromEdScheduledToAnotherEdIndicatorValueEntity(
 						toBeMovedEdScheduled, EdHistory.class);
+
 		toBeMovedEdScheduled = (EdScheduled) edIndicatorValueDAOImpl
 				.findByEdIndicatorValue(expectedEdScheduled, EdScheduled.class);
 
@@ -168,6 +170,17 @@ public class EdIndicatorValueDAOImplTest extends
 
 		assertNull(toBeMovedEdScheduled);
 		assertNotNull(edHistory);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testMoveFromEdScheduledToAnotherEdIndicatorValueEntityWithIllegalArgumentException() {
+
+		EdScheduled toBeMovedEdScheduled = (EdScheduled) edIndicatorValueDAOImpl
+				.findByEdIndicatorValue(expectedEdScheduled, EdScheduled.class);
+
+		edIndicatorValueDAOImpl
+				.moveFromEdScheduledToAnotherEdIndicatorValueEntity(
+						toBeMovedEdScheduled, EdHistory.class);
 	}
 
 	@Test

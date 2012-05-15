@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdIndicatorValue;
 import com.econdates.domain.entities.EdScheduled;
+import com.econdates.domain.factory.EdIndicatorValueFactory;
 import com.econdates.domain.persistance.EdIndicatorValueDAO;
 import com.google.common.base.Strings;
 
@@ -68,9 +69,8 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 					fromEdScheduled, EdScheduled.class);
 		}
 
-		EdScheduled defensiveCopyEdScheduled = new EdScheduled(fromEdScheduled);
 		EdHistory newEdHistory = edIndicatorValueFactoryImpl
-				.convertEdScheduledToEdHistory(defensiveCopyEdScheduled);
+				.convertEdScheduledToEdHistory(fromEdScheduled);
 		delete(fromEdScheduled);
 		entityManager.flush();
 
