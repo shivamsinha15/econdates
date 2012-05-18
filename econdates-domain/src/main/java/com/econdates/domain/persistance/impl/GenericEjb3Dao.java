@@ -82,6 +82,7 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	// entityManager.flush();
 	public void persist(T t) {
 		entityManager.persist(t);
+		entityManager.flush();
 	}
 
 	/**

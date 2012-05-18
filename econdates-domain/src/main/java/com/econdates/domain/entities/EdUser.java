@@ -13,9 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -55,10 +54,11 @@ public class EdUser {
 	private String password;
 
 	@Column(name = "edu_created_date")
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDate")
 	private LocalDate createdDate;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "edi_last_login")
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
 	private DateTime lastLogin;
 
 	@Column(name = "edu_ip_address")

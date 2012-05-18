@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.econdates.domain.entities.EdCity;
 import com.econdates.domain.entities.EdCountry;
@@ -83,6 +85,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 		}
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void initIndicatorAndHistoryData(LocalDate startDate,
 			LocalDate endDate) throws IOException {
 		forexPro.setAttachHistoricalDataToIndicators(true);
@@ -113,6 +116,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 		}
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void validateAndPersistHistoricalData(Set<EdHistory> edHistories) {
 
 		EdHistory nextEdHistory;
