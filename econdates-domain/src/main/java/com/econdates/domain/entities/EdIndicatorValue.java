@@ -1,7 +1,5 @@
 package com.econdates.domain.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,8 +10,10 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 /**
  * @author shivamsinha
@@ -40,13 +40,13 @@ public abstract class EdIndicatorValue implements Comparable<EdIndicatorValue> {
 	@Column(name = "edh_analysis", columnDefinition = "TEXT")
 	protected String analysis;
 
-	@Temporal(TemporalType.DATE)
 	@Column(name = "edh_release_date")
-	protected Date releaseDate;
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDate")
+	protected LocalDate releaseDate;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "edh_updated_date")
-	protected Date updatedDate;
+	@Column(name = "edh_last_updated")
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+	protected DateTime lastUpdated;
 
 	@Column(name = "edh_previous")
 	protected String previous;
@@ -57,12 +57,12 @@ public abstract class EdIndicatorValue implements Comparable<EdIndicatorValue> {
 
 	public abstract boolean equals(final Object obj);
 
-	public Date getLastUpdatedDate() {
-		return updatedDate;
+	public DateTime getLastUpdatedDate() {
+		return lastUpdated;
 	}
 
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
-		this.updatedDate = lastUpdatedDate;
+	public void setLastUpdatedDate(DateTime lastUpdatedDate) {
+		this.lastUpdated = lastUpdatedDate;
 	}
 
 	public abstract int hashCode();
@@ -111,11 +111,11 @@ public abstract class EdIndicatorValue implements Comparable<EdIndicatorValue> {
 		this.analysis = analysis;
 	}
 
-	public Date getReleaseDate() {
+	public LocalDate getReleaseDate() {
 		return releaseDate;
 	}
 
-	public void setReleaseDate(Date releaseDate) {
+	public void setReleaseDate(LocalDate releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 

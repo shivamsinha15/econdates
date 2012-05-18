@@ -24,7 +24,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
 import com.econdates.dataharvesterengine.EconDateInitDatabase;
-import com.econdates.domain.entities.EdError;
 import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
@@ -85,7 +84,7 @@ public class EdIndicatorValueDAOImplTest extends
 		expectedEdHistory.setAnalysis(null);
 		expectedEdHistory.setConsensus(null);
 		expectedEdHistory.setPrevious("43.8");
-		expectedEdHistory.setReleaseDate(new LocalDate(2011, 2, 6).toDate());
+		expectedEdHistory.setReleaseDate(new LocalDate(2011, 2, 6));
 		expectedEdHistory.setRevised(null);
 
 		expectedEdScheduled = new EdScheduled();
@@ -93,7 +92,7 @@ public class EdIndicatorValueDAOImplTest extends
 		expectedEdScheduled.setAnalysis(null);
 		expectedEdScheduled.setConsensus(null);
 		expectedEdScheduled.setPrevious("40.2");
-		expectedEdScheduled.setReleaseDate(new LocalDate(2029, 2, 6).toDate());
+		expectedEdScheduled.setReleaseDate(new LocalDate(2029, 2, 6));
 		expectedEdScheduled.setRevised(null);
 
 		expectedEdHistory.setEdIndicator(aigIndicator);
@@ -191,7 +190,7 @@ public class EdIndicatorValueDAOImplTest extends
 		other.setAnalysis(null);
 		other.setConsensus("");
 		other.setPrevious("43.8");
-		other.setReleaseDate(new DateTime(2011, 2, 6, 0, 0, 0).toDate());
+		other.setReleaseDate(new LocalDate(2011, 2, 6));
 		other.setRevised(null);
 		other.setEdIndicator(aigIndicator);
 

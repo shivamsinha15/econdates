@@ -2,14 +2,12 @@ package com.econdates.dataharvesterengine;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -114,15 +112,14 @@ public class ForexPro implements HarvestLocation {
 			throws IOException {
 		setAttachHistoricalDataToIndicators(false);
 		this.attachMoreDetailsToIndicators = false;
-		List<EdIndicator> releaseDateIndicators = getEconomicIndicatorsForSingleDay(LocalDate
-				.fromDateFields(toBeReleasedData.getReleaseDate()));
+		List<EdIndicator> releaseDateIndicators = getEconomicIndicatorsForSingleDay(toBeReleasedData
+				.getReleaseDate());
 		for (EdIndicator releaseDateIndicator : releaseDateIndicators) {
 			if (releaseDateIndicator.equals(toBeReleasedData.getEdIndicator())) {
 
 				EdIndicator toBeReleasedIndicator = toBeReleasedData
 						.getEdIndicator();
-				LocalDate toBeReleasedDate = LocalDate
-						.fromDateFields(toBeReleasedData.getReleaseDate());
+				LocalDate toBeReleasedDate = toBeReleasedData.getReleaseDate();
 
 				EdHistory currentReleaseData = getEdIndicatorValuesByDate(
 						toBeReleasedIndicator, toBeReleasedDate);
@@ -189,7 +186,7 @@ public class ForexPro implements HarvestLocation {
 				case 1:
 					// This cell contains holiday date, however the date from
 					// the element is not required, since we already have it.
-					edHoliday.setDate(day.toDate());
+					edHoliday.setDate(day);
 					break;
 				case 2:
 					// This cell contains padding, hence do nothing.
@@ -277,9 +274,7 @@ public class ForexPro implements HarvestLocation {
 						.trimFrom(time[0]));
 				int min = Integer.parseInt(CharMatcher.WHITESPACE
 						.trimFrom(time[1]));
-				edIndicator.setReleaseTime(new LocalTime(hour, min)
-						.toDateTimeToday(DateTimeZone.forID("Etc/UTC"))
-						.toDate());
+				edIndicator.setReleaseTime(new LocalTime(hour, min));
 				edIndicator.setReleaseDayOfWeek(day.getDayOfWeek());
 				edIndicator.setReleaseDayOfMonth(day.getDayOfMonth());
 				edIndicator.setEdCountry(getEdCountry(eventCountry, eventName));
@@ -299,7 +294,7 @@ public class ForexPro implements HarvestLocation {
 				currentData.setPrevious(eventPrevious);
 				currentData.setRevised(CharMatcher.WHITESPACE.trimFrom(
 						eventRevisedFrom).isEmpty() ? null : eventRevisedFrom);
-				currentData.setReleaseDate(day.toDate());
+				currentData.setReleaseDate(day);
 				currentData.setEdIndicator(edIndicator);
 
 				/*
@@ -400,7 +395,7 @@ public class ForexPro implements HarvestLocation {
 		return edHistories;
 	}
 
-	private Date extractReleaseDateForHistoricalDetails(
+	private LocalDate extractReleaseDateForHistoricalDetails(
 			String releaseDateAsString) {
 		logger.info("Release Date : " + releaseDateAsString);
 
@@ -426,7 +421,7 @@ public class ForexPro implements HarvestLocation {
 
 		DateTime releaseDate = new DateTime(year, monthAsInt, day, HOUR_OF_DAY,
 				MINUTE_OF_HOUR, TIMEZONE);
-		return releaseDate.toDate();
+		return releaseDate.toLocalDate();
 	}
 
 	public EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,

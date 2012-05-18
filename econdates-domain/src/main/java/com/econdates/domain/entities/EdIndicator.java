@@ -1,6 +1,5 @@
 package com.econdates.domain.entities;
 
-import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,8 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 
 import com.google.common.base.Objects;
 
@@ -54,20 +55,18 @@ public class EdIndicator {
 	}
 
 	public EdIndicator(long id, String name, Importance importance,
-			String description, Date releaseTime, Integer releaseFrequency,
-			String releaseUrl, String sourceReport, Date lastUpdated,
-			EdCountry edCountry) {
+			String description, LocalTime releaseTime,
+			Integer releaseFrequency, String releaseUrl, String sourceReport,
+			DateTime lastUpdated, EdCountry edCountry) {
 		this.id = id;
 		this.name = name;
 		this.importance = importance;
 		this.description = description;
-		this.releaseTime = (releaseTime != null ? new Date(
-				releaseTime.getTime()) : null);
+		this.releaseTime = releaseTime;
 		this.releaseFrequency = releaseFrequency;
 		this.releaseUrl = releaseUrl;
 		this.sourceReport = sourceReport;
-		this.lastUpdated = (lastUpdated != null ? new Date(
-				lastUpdated.getTime()) : null);
+		this.lastUpdated = lastUpdated;
 		this.edCountry = new EdCountry(edCountry);
 	}
 
@@ -94,9 +93,9 @@ public class EdIndicator {
 	@Column(name = "edi_description", columnDefinition = "TEXT")
 	private String description;
 
-	@Temporal(TemporalType.TIME)
 	@Column(name = "edi_release_time")
-	private Date releaseTime;
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentLocalTimeAsTime")
+	private LocalTime releaseTime;
 
 	@Column(name = "edi_release_frequency")
 	private Integer releaseFrequency;
@@ -116,9 +115,9 @@ public class EdIndicator {
 	@Column(name = "edi_source_report")
 	private String sourceReport;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "edi_last_updated")
-	private Date lastUpdated;
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+	private DateTime lastUpdated;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "edi_country_id")
@@ -162,11 +161,11 @@ public class EdIndicator {
 		this.releaseUrl = releaseUrl;
 	}
 
-	public Date getReleaseTime() {
+	public LocalTime getReleaseTime() {
 		return releaseTime;
 	}
 
-	public void setReleaseTime(Date releaseTime) {
+	public void setReleaseTime(LocalTime releaseTime) {
 		this.releaseTime = releaseTime;
 	}
 
@@ -226,11 +225,11 @@ public class EdIndicator {
 		return releaseDayOfMonth;
 	}
 
-	public Date getLastUpdated() {
+	public DateTime getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
+	public void setLastUpdated(DateTime lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 

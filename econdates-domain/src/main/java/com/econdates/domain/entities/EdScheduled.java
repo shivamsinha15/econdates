@@ -1,7 +1,5 @@
 package com.econdates.domain.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -19,14 +17,14 @@ public class EdScheduled extends EdIndicatorValue {
 	}
 
 	public EdScheduled(long id, String actual, String analysis,
-			String consensus, String previous, Date releaseDate,
+			String consensus, String previous, LocalDate releaseDate,
 			String revised, EdIndicator edIndicator) {
 		this.id = id;
 		this.actual = actual;
 		this.analysis = analysis;
 		this.consensus = consensus;
 		this.previous = previous;
-		this.releaseDate = new Date(releaseDate.getTime());
+		this.releaseDate = releaseDate;
 		this.revised = revised;
 		this.edIndicator = new EdIndicator(edIndicator);
 	}
@@ -65,9 +63,9 @@ public class EdScheduled extends EdIndicatorValue {
 
 	@Override
 	public int compareTo(EdIndicatorValue other) {
-		LocalDate releaseDate = LocalDate.fromDateFields(this.releaseDate);
-		LocalDate otherReleaseDate = LocalDate
-				.fromDateFields(((EdIndicatorValue) other).getReleaseDate());
+		LocalDate releaseDate = this.releaseDate;
+		LocalDate otherReleaseDate = ((EdIndicatorValue) other)
+				.getReleaseDate();
 		if (releaseDate.isBefore(otherReleaseDate)) {
 			return -1;
 		} else if (releaseDate.isAfter(otherReleaseDate)) {

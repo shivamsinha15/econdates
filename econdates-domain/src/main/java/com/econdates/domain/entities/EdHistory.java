@@ -31,9 +31,9 @@ public class EdHistory extends EdIndicatorValue {
 
 	@Override
 	public int compareTo(EdIndicatorValue other) {
-		LocalDate releaseDate = LocalDate.fromDateFields(this.releaseDate);
-		LocalDate otherReleaseDate = LocalDate
-				.fromDateFields(((EdIndicatorValue) other).getReleaseDate());
+		LocalDate releaseDate = this.releaseDate;
+		LocalDate otherReleaseDate = ((EdIndicatorValue) other)
+				.getReleaseDate();
 		if (releaseDate.isBefore(otherReleaseDate)) {
 			return -1;
 		} else if (releaseDate.isAfter(otherReleaseDate)) {

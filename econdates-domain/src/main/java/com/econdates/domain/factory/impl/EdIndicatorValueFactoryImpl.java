@@ -1,8 +1,7 @@
 package com.econdates.domain.factory.impl;
 
-import java.util.Date;
-
 import org.hsqldb.lib.StringUtil;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,7 @@ public class EdIndicatorValueFactoryImpl implements EdIndicatorValueFactory {
 		edHistory.setPrevious(edScheduled.getPrevious());
 		edHistory.setReleaseDate(edScheduled.getReleaseDate());
 		edHistory.setRevised(edScheduled.getRevised());
-		edHistory.setLastUpdatedDate(new Date());
+		edHistory.setLastUpdatedDate(new DateTime());
 		edIndicatorValueDAOImpl
 				.setEdIndicatorValueEntityToBeQueried(EdHistory.class);
 
@@ -50,7 +49,7 @@ public class EdIndicatorValueFactoryImpl implements EdIndicatorValueFactory {
 		edError.setPrevious(edScheduled.getPrevious());
 		edError.setReleaseDate(edScheduled.getReleaseDate());
 		edError.setRevised(edScheduled.getRevised());
-		edError.setLastUpdatedDate(new Date());
+		edError.setLastUpdatedDate(new DateTime());
 		return edError;
 	}
 
@@ -63,7 +62,7 @@ public class EdIndicatorValueFactoryImpl implements EdIndicatorValueFactory {
 		edProcessed.setPrevious(edScheduled.getPrevious());
 		edProcessed.setReleaseDate(edScheduled.getReleaseDate());
 		edProcessed.setRevised(edScheduled.getRevised());
-		edProcessed.setLastUpdatedDate(new Date());
+		edProcessed.setLastUpdatedDate(new DateTime());
 		return edProcessed;
 	}
 

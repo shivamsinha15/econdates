@@ -168,7 +168,7 @@ public class ForexProTest {
 		EdHistory toBeReleasedPPI = new EdHistory();
 		toBeReleasedPPI.setEdIndicator(sthKoreanPPI);
 		toBeReleasedPPI.setPrevious("0.70%");
-		toBeReleasedPPI.setReleaseDate(new LocalDate(2012, 04, 8).toDate());
+		toBeReleasedPPI.setReleaseDate(new LocalDate(2012, 04, 8));
 		forexPro.populateIndicatorValuesForLatestData(toBeReleasedPPI);
 		assertEquals("0.60%", toBeReleasedPPI.getActual());
 

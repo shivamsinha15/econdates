@@ -1,7 +1,6 @@
 package com.econdates.domain.entities;
 
 import java.util.Collection;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = EdUser.TABLE_NAME)
@@ -52,13 +54,12 @@ public class EdUser {
 	@Column(name = "edu_password")
 	private String password;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "edu_created_date")
-	private Date createdDate;
+	private LocalDate createdDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "edi_last_login")
-	private Date lastLogin;
+	private DateTime lastLogin;
 
 	@Column(name = "edu_ip_address")
 	private String ipAddress;

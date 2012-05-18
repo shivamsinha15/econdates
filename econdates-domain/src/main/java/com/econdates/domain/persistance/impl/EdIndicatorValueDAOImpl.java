@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -111,8 +110,7 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 		}
 
 		findByEdHistory.append(" AND e.releaseDate ='"
-				+ LocalDate.fromDateFields(edIndicatorValue.getReleaseDate())
-						.toString(fmt) + "'");
+				+ edIndicatorValue.getReleaseDate().toString(fmt) + "'");
 
 		LOG.info(findByEdHistory.toString());
 		return findByEdHistory.toString();

@@ -1,7 +1,5 @@
 package com.econdates.domain.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,10 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
+import org.joda.time.LocalDate;
 
 import com.google.common.base.Objects;
 
@@ -32,9 +29,9 @@ public class EdHoliday {
 	@Column(name = "edh_name")
 	private String name;
 
-	@Temporal(TemporalType.DATE)
 	@Column(name = "edh_date")
-	private Date date;
+	@Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDate")
+	private LocalDate date;
 
 	@Column(nullable = false, name = "edh_market_close")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
@@ -66,11 +63,11 @@ public class EdHoliday {
 		return Objects.hashCode(name, date, marketName, marketClose, edCountry);
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
