@@ -11,6 +11,7 @@ import org.jsoup.nodes.Document;
 import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
+import com.econdates.domain.entities.EdScheduled;
 
 public interface HarvestLocation {
 	void setConnObj(String Url) throws IOException;
@@ -35,7 +36,7 @@ public interface HarvestLocation {
 	List<EdHoliday> getEdHolidaysForASingleDay(LocalDate dateOnly)
 			throws IOException;
 
-	void populateIndicatorValuesForLatestData(EdHistory toBeReleasedData)
+	void populateIndicatorValuesForLatestData(EdScheduled toBeReleasedData)
 			throws IOException;
 
 	void setAttachHistoricalDataToIndicators(

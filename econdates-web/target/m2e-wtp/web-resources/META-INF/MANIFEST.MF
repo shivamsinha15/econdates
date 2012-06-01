@@ -6,6 +6,6 @@ Class-Path: lib/spring-web-3.0.7.RELEASE.jar lib/aopalliance-1.0.jar l
  r lib/spring-aop-3.0.7.RELEASE.jar lib/spring-core-3.0.7.RELEASE.jar 
  lib/commons-logging-1.1.1.jar lib/spring-webmvc-3.1.0.RC1.jar lib/spr
  ing-asm-3.1.0.RC1.jar lib/spring-context-support-3.1.0.RC1.jar lib/sp
- ring-expression-3.1.0.RC1.jar
+ ring-expression-3.1.0.RC1.jar lib/log4j-1.2.14.jar
 Created-By: Maven Integration for Eclipse
 

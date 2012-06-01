@@ -31,6 +31,7 @@ import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
+import com.econdates.domain.entities.EdScheduled;
 import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 
@@ -165,7 +166,7 @@ public class ForexProTest {
 		sthKoreanPPI.setImportance(Importance.Low);
 		sthKoreanPPI.setEdCountry(edCountryDAOImpl.findByName("South Korea"));
 
-		EdHistory toBeReleasedPPI = new EdHistory();
+		EdScheduled toBeReleasedPPI = new EdScheduled();
 		toBeReleasedPPI.setEdIndicator(sthKoreanPPI);
 		toBeReleasedPPI.setPrevious("0.70%");
 		toBeReleasedPPI.setReleaseDate(new LocalDate(2012, 04, 8));

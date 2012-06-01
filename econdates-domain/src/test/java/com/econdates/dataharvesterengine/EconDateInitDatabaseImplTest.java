@@ -24,13 +24,12 @@ import com.econdates.domain.persistance.EdCountryDAO;
 public class EconDateInitDatabaseImplTest {
 	@Autowired
 	EconDateInitDatabase edInitDbImpl;
-	
+
 	@Autowired
 	HarvestLocation forexPro;
 
 	@Autowired
 	EdCountryDAO edCountryDAOImpl;
-
 
 	@Test
 	public void initCountryData() {
@@ -51,7 +50,7 @@ public class EconDateInitDatabaseImplTest {
 
 	@Test
 	public void initRegionData() {
-		if(!edInitDbImpl.isRegionDataInit()){
+		if (!edInitDbImpl.isRegionDataInit()) {
 			edInitDbImpl.initRegionData();
 		}
 		assertTrue(edInitDbImpl.isRegionDataInit());
@@ -59,10 +58,15 @@ public class EconDateInitDatabaseImplTest {
 
 	@Test
 	public void initIndicatorAndHistoryData() throws IOException {
-		LocalDate startDate = new LocalDate(2012, 4,
-				8, GregorianChronology.getInstanceUTC());
-		LocalDate endDate = new LocalDate(2012, 4,
-				7, GregorianChronology.getInstanceUTC());
+		// LocalDate startDate = new LocalDate(2012, 4,
+		// 8, GregorianChronology.getInstanceUTC());
+		// LocalDate endDate = new LocalDate(2012, 4,
+		// 7, GregorianChronology.getInstanceUTC());
+
+		LocalDate startDate = new LocalDate(2012, 5, 19,
+				GregorianChronology.getInstanceUTC());
+		LocalDate endDate = new LocalDate(2012, 5, 18,
+				GregorianChronology.getInstanceUTC());
 
 		if (edInitDbImpl.isEuroZoneAsCountryDataInit()
 				&& !edInitDbImpl.isIndicatorAndHistoryDataInit()) {
@@ -70,27 +74,29 @@ public class EconDateInitDatabaseImplTest {
 		}
 		assertTrue(edInitDbImpl.isIndicatorAndHistoryDataInit());
 	}
-	
+
 	@Test
-	public void testValidateAndPersisHistoricalData() throws IOException{
-		
-		Set<EdHistory> edHistories = forexPro.getHistoricalDetailsByEventId(new EdIndicator(), "17226");
+	public void testValidateAndPersisHistoricalData() throws IOException {
+
+		Set<EdHistory> edHistories = forexPro.getHistoricalDetailsByEventId(
+				new EdIndicator(), "17226");
 		edInitDbImpl.validateAndPersistHistoricalData(edHistories);
-		
+
 	}
-	
-	@Test 
-	public void validateHistoricalData() throws IOException{
-		LocalDate startDate = new LocalDate(2012, 4,
-				8, GregorianChronology.getInstanceUTC());
-		LocalDate endDate = new LocalDate(2012, 4,
-				7, GregorianChronology.getInstanceUTC());
+
+	@Test
+	public void validateHistoricalData() throws IOException {
+		LocalDate startDate = new LocalDate(2012, 4, 8,
+				GregorianChronology.getInstanceUTC());
+		LocalDate endDate = new LocalDate(2012, 4, 7,
+				GregorianChronology.getInstanceUTC());
+
 		if (edInitDbImpl.isEuroZoneAsCountryDataInit()
 				&& !edInitDbImpl.isIndicatorAndHistoryDataInit()) {
 			edInitDbImpl.initIndicatorAndHistoryData(startDate, endDate);
 		}
 		edInitDbImpl.initIndicatorAndHistoryData(startDate, endDate);
-		
+
 		assertTrue(true);
 	}
 
@@ -106,6 +112,5 @@ public class EconDateInitDatabaseImplTest {
 		}
 		assertTrue(edInitDbImpl.isHolidayDataInit());
 	}
-	
-	
+
 }

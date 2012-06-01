@@ -3,6 +3,8 @@ package com.econdates.domain.persistance;
 import java.util.Collection;
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
 import com.econdates.domain.entities.EdIndicatorValue;
 import com.econdates.domain.entities.EdScheduled;
 
@@ -24,6 +26,9 @@ public interface EdIndicatorValueDAO extends GenericDAO<EdIndicatorValue> {
 			Class<? extends EdIndicatorValue> toEdIndicatorValue);
 
 	void setEdIndicatorValueEntityToBeQueried(
+			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue);
+
+	List<EdIndicatorValue> findByDateValue(LocalDate date,
 			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue);
 
 }

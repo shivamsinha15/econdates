@@ -29,6 +29,7 @@ import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
+import com.econdates.domain.entities.EdScheduled;
 import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.econdates.domain.persistance.EdIndicatorValueDAO;
@@ -108,7 +109,7 @@ public class ForexPro implements HarvestLocation {
 		return isValidDocument;
 	}
 
-	public void populateIndicatorValuesForLatestData(EdHistory toBeReleasedData)
+	public void populateIndicatorValuesForLatestData(EdScheduled toBeReleasedData)
 			throws IOException {
 		setAttachHistoricalDataToIndicators(false);
 		this.attachMoreDetailsToIndicators = false;

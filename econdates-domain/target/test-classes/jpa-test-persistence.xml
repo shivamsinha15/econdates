@@ -14,6 +14,5 @@
 		<class>com.econdates.domain.entities.EdHoliday</class>
 		<class>com.econdates.domain.entities.EdIndicator</class>
 		<class>com.econdates.domain.entities.EdRegion</class>
-		<class>com.econdates.domain.entities.EdUser</class>
 	</persistence-unit>
 </persistence>

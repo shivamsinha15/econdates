@@ -66,4 +66,15 @@ public class EdIndicatorValueFactoryImpl implements EdIndicatorValueFactory {
 		return edProcessed;
 	}
 
+	public EdScheduled convertEdHistoryToEdScheduled(EdHistory edHistory) {
+		EdScheduled edScheduled = new EdScheduled();
+		edScheduled.setActual(edHistory.getActual());
+		edScheduled.setAnalysis(edHistory.getActual());
+		edScheduled.setConsensus(edHistory.getConsensus());
+		edScheduled.setPrevious(edHistory.getPrevious());
+		edScheduled.setReleaseDate(edHistory.getReleaseDate());
+		edScheduled.setRevised(edHistory.getRevised());
+		edScheduled.setEdIndicator(edHistory.getEdIndicator());
+		return edScheduled;
+	}
 }

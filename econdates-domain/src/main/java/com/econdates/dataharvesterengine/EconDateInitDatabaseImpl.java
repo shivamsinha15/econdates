@@ -1,11 +1,13 @@
 package com.econdates.dataharvesterengine;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,15 @@ import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.entities.EdRegion;
+import com.econdates.domain.entities.EdScheduled;
+import com.econdates.domain.factory.EdIndicatorValueFactory;
 import com.econdates.domain.persistance.EdCityDAO;
 import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdHolidayDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.econdates.domain.persistance.EdIndicatorValueDAO;
 import com.econdates.domain.persistance.EdRegionDAO;
+import com.google.common.base.Strings;
 
 @Service
 public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
@@ -69,6 +74,9 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	@Autowired
 	HarvestLocation forexPro;
+
+	@Autowired
+	EdIndicatorValueFactory edIndValFactoryImpl;
 
 	public void initHolidayData(LocalDate startDate, LocalDate endDate)
 			throws IOException {
@@ -122,9 +130,17 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 		EdHistory nextEdHistory;
 
 		TreeSet<EdHistory> sortedSetHistories = new TreeSet<EdHistory>();
+		Set<EdScheduled> edScheduled = new HashSet<EdScheduled>();
 		sortedSetHistories.addAll(edHistories);
 
 		for (EdHistory currentEdHistory : sortedSetHistories) {
+
+			if (Strings.isNullOrEmpty(currentEdHistory.getActual())) {
+				edScheduled.add(edIndValFactoryImpl
+						.convertEdHistoryToEdScheduled(currentEdHistory));
+				continue;
+			}
+
 			nextEdHistory = sortedSetHistories.higher(currentEdHistory);
 			boolean valid = false;
 
@@ -141,6 +157,16 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 				edIndicatorValueDAOImpl.persist(currentEdHistory);
 			}
 		}
+
+		for (EdScheduled scheduled : edScheduled) {
+			EdScheduled isScheduledPersisted = (EdScheduled) edIndicatorValueDAOImpl
+					.findByEdIndicatorValue(scheduled, EdScheduled.class);
+			if (isScheduledPersisted == null) {
+				edIndicatorValueDAOImpl.persist(scheduled);
+			}
+
+		}
+
 	}
 
 	public void initCountryData() {
@@ -259,6 +285,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 			edIndicator.setName(NAME);
 			edIndicator.setEdCountry(edCountryDAOImpl.findByName(COUNTRY_NAME));
 			edIndicator.setImportance(Importance.Low);
+			edIndicator.setReleaseTime(new LocalTime().plusSeconds(20));
 			edIndicatorDAOImpl.saveOrUpdate(edIndicator);
 		}
 	}

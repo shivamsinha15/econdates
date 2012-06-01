@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -46,12 +47,29 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<EdIndicatorValue> findByDateValue(LocalDate date,
+			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue) {
+
+		setEdIndicatorValueEntityToBeQueried(typeOfEdIndicatorValue);
+
+		StringBuilder findByEdIndiValue = new StringBuilder();
+		findByEdIndiValue.append("from " + getEntityBeanType().getName());
+		findByEdIndiValue.append(" e WHERE e.releaseDate ='"
+				+ date.toString(fmt) + "'");
+
+		return (List<EdIndicatorValue>) entityManager.createQuery(
+				findByEdIndiValue.toString()).getResultList();
+
+	}
+
 	public EdIndicatorValue findByEdIndicatorValue(EdIndicatorValue edHistory,
 			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue) {
 		try {
 			setEdIndicatorValueEntityToBeQueried(typeOfEdIndicatorValue);
 			return (EdIndicatorValue) entityManager.createQuery(
-					buildFindByEdHistoryQuery(edHistory)).getSingleResult();
+					buildFindByEdIndicatorValueQuery(edHistory))
+					.getSingleResult();
 		} catch (NoResultException nre) {
 			return null;
 		}
@@ -84,36 +102,37 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 
 	// If entityBean type = EdIndicatorValue.class then all Entities which
 	// extend it will be queried separately
-	private String buildFindByEdHistoryQuery(EdIndicatorValue edIndicatorValue) {
-		StringBuilder findByEdHistory = new StringBuilder();
-		findByEdHistory.append("from " + getEntityBeanType().getName());
-		findByEdHistory.append(getWhereString(edIndicatorValue));
+	private String buildFindByEdIndicatorValueQuery(
+			EdIndicatorValue edIndicatorValue) {
+		StringBuilder findByEdIndiValue = new StringBuilder();
+		findByEdIndiValue.append("from " + getEntityBeanType().getName());
+		findByEdIndiValue.append(getWhereString(edIndicatorValue));
 
 		if (!Strings.isNullOrEmpty(edIndicatorValue.getConsensus())) {
-			findByEdHistory.append(" AND e.consensus ='"
+			findByEdIndiValue.append(" AND e.consensus ='"
 					+ edIndicatorValue.getConsensus() + "'");
 		}
 
 		if (!Strings.isNullOrEmpty(edIndicatorValue.getRevised())) {
-			findByEdHistory.append(" AND e.revised ='"
+			findByEdIndiValue.append(" AND e.revised ='"
 					+ edIndicatorValue.getRevised() + "'");
 		}
 
 		if (!Strings.isNullOrEmpty(edIndicatorValue.getPrevious())) {
-			findByEdHistory.append(" AND e.previous ='"
+			findByEdIndiValue.append(" AND e.previous ='"
 					+ edIndicatorValue.getPrevious() + "'");
 		}
 
 		if (!Strings.isNullOrEmpty(edIndicatorValue.getActual())) {
-			findByEdHistory.append(" AND e.actual ='"
+			findByEdIndiValue.append(" AND e.actual ='"
 					+ edIndicatorValue.getActual() + "'");
 		}
 
-		findByEdHistory.append(" AND e.releaseDate ='"
+		findByEdIndiValue.append(" AND e.releaseDate ='"
 				+ edIndicatorValue.getReleaseDate().toString(fmt) + "'");
 
-		LOG.info(findByEdHistory.toString());
-		return findByEdHistory.toString();
+		LOG.info(findByEdIndiValue.toString());
+		return findByEdIndiValue.toString();
 	}
 
 	private String getWhereString(EdIndicatorValue edHistory) {
