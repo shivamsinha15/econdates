@@ -1,16 +1,16 @@
 package org.jboss.spring.samples.orders.domain.ejb;
 
-import org.jboss.spring.vfs.context.VFSClassPathXmlApplicationContext;
-import org.jboss.spring.samples.orders.domain.repository.UserRepository;
-import org.jboss.spring.samples.orders.domain.repository.OrderRepository;
-import org.jboss.spring.samples.orders.domain.entities.Order;
-import org.jboss.spring.samples.orders.domain.entities.User;
-import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import java.util.List;
+
+import org.jboss.spring.samples.orders.domain.entities.Order;
+import org.jboss.spring.samples.orders.domain.entities.User;
+import org.jboss.spring.samples.orders.domain.repository.OrderRepository;
+import org.jboss.spring.samples.orders.domain.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
 
 /**
  * @author: marius

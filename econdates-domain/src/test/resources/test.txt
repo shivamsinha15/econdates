@@ -1,0 +1,152 @@
+package com.econdates.application;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.econdates.util.ReflectionUtil;
+
+public class EventManagerServiceImplTest {
+
+    private EventManagerService underTest;
+
+    @Mock
+    private CoacConfigurationService configService;
+    @Mock
+    private ExecutableLauncher execLauncher;
+
+    @Before
+    public void setUp() {
+        underTest = new EventManagerServiceImpl();
+        MockitoAnnotations.initMocks(this);
+
+        ReflectionUtil.setField(underTest, "configService", configService);
+        ReflectionUtil.setField(underTest, "execLauncher", execLauncher);
+    }
+
+    @Test
+    public void testInvokeEventManagerSuccessfully() throws Exception {
+        // SETUP
+        when(configService.getEventManagerScriptName()).thenReturn("./scriptToRun.sh");
+        when(configService.getEventManagerFileCode()).thenReturn("FCD");
+        when(configService.getEventManagerScriptLocation()).thenReturn("/");
+        when(configService.getSwiftWorkingDirectory()).thenReturn("/working");
+
+        // TEST
+        final File expectedFile = new File(configService.getEventManagerScriptLocation());
+        final Date expectedDate = new Date();
+        final String[] expectedArgs =
+                new String[] { "./scriptToRun.sh", "FCD", new SimpleDateFormat("yyMMdd").format(expectedDate),
+                        "/working", "file.txt" };
+
+        when(
+                execLauncher.launch(Matchers.argThat(new StringArrayMatcher(expectedArgs)),
+                        Matchers.eq(expectedFile), Matchers.<ExecuteTask.GobblerListener> anyObject(), Matchers
+                                .<ExecuteTask.GobblerListener> anyObject())).thenReturn(0);
+
+        underTest.invokeEventManager("file.txt", expectedDate);
+
+        verify(execLauncher, times(1)).launch(Matchers.argThat(new StringArrayMatcher(expectedArgs)),
+                Matchers.eq(expectedFile), Matchers.<ExecuteTask.GobblerListener> anyObject(),
+                Matchers.<ExecuteTask.GobblerListener> anyObject());
+    }
+
+    @Test
+    public void testInvokeEventManagerSkipsIfConfigIsMissing() throws Exception {
+        when(configService.getEventManagerScriptName()).thenReturn(null);
+        final String message = underTest.invokeEventManager("file.txt", new Date());
+        assertTrue(message.startsWith("Not executing event manager in this environment"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInvokeEventManagerAndScriptNotFound() throws Exception {
+        // SETUP
+        when(configService.getEventManagerScriptName()).thenReturn("./scriptToRun.sh");
+        when(configService.getEventManagerFileCode()).thenReturn("FCD");
+        when(configService.getEventManagerScriptLocation()).thenReturn("/blah/blah");
+        when(configService.getSwiftWorkingDirectory()).thenReturn("/working");
+
+        // TEST
+        underTest.invokeEventManager("file.txt", new Date());
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void testInvokeEventManagerAndExceptionThrown() throws Exception {
+        // SETUP
+        when(configService.getEventManagerScriptName()).thenReturn("./scriptToRun.sh");
+        when(configService.getEventManagerFileCode()).thenReturn("FCD");
+        when(configService.getEventManagerScriptLocation()).thenReturn("/");
+        when(configService.getSwiftWorkingDirectory()).thenReturn("/working");
+
+        // TEST
+        final File expectedFile = new File(configService.getEventManagerScriptLocation());
+        final Date expectedDate = new Date();
+        final String[] expectedArgs =
+                new String[] { "./scriptToRun.sh", "FCD", new SimpleDateFormat("yyMMdd").format(expectedDate),
+                        "/working", "file.txt" };
+
+        when(
+                execLauncher.launch(Matchers.argThat(new StringArrayMatcher(expectedArgs)),
+                        Matchers.eq(expectedFile), Matchers.<ExecuteTask.GobblerListener> anyObject(), Matchers
+                                .<ExecuteTask.GobblerListener> anyObject())).thenThrow(new IOException());
+
+        underTest.invokeEventManager("file.txt", expectedDate);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInvokeEventManagerAndReturnCodeNotZero() throws Exception {
+        // SETUP
+        when(configService.getEventManagerScriptName()).thenReturn("./scriptToRun.sh");
+        when(configService.getEventManagerFileCode()).thenReturn("FCD");
+        when(configService.getEventManagerScriptLocation()).thenReturn("/");
+        when(configService.getSwiftWorkingDirectory()).thenReturn("/working");
+
+        // TEST
+        final File expectedFile = new File(configService.getEventManagerScriptLocation());
+        final Date expectedDate = new Date();
+        final String[] expectedArgs =
+                new String[] { "./scriptToRun.sh", "FCD", new SimpleDateFormat("yyMMdd").format(expectedDate),
+                        "/working", "file.txt" };
+
+        when(
+                execLauncher.launch(Matchers.argThat(new StringArrayMatcher(expectedArgs)),
+                        Matchers.eq(expectedFile), Matchers.<ExecuteTask.GobblerListener> anyObject(), Matchers
+                                .<ExecuteTask.GobblerListener> anyObject())).thenReturn(2);
+
+        underTest.invokeEventManager("file.txt", expectedDate);
+    }
+ 
+    private static class StringArrayMatcher extends BaseMatcher<String[]> implements Matcher<String[]> {
+        private final String[] expected;
+
+        public StringArrayMatcher(final String[] expected) {
+            this.expected = expected;
+        }
+
+        public boolean matches(Object item) {
+            final String[] strItem = (String[]) item;
+            if (expected.length != strItem.length) {
+                return false;
+            }
+            for (int i = 0; i < expected.length; i++) {
+                if (!expected[i].equals(strItem[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void describeTo(Description description) {
+        }
+    }
+}

@@ -31,4 +31,7 @@ public interface EdIndicatorValueDAO extends GenericDAO<EdIndicatorValue> {
 	List<EdIndicatorValue> findByDateValue(LocalDate date,
 			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue);
 
+	List<EdIndicatorValue> findByGreaterThanOrEqualToDateValue(LocalDate date,
+			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue);
+
 }

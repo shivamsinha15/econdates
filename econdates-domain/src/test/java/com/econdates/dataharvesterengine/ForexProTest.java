@@ -56,7 +56,7 @@ public class ForexProTest {
 	EdCountryDAO edCountryDAOImpl;
 
 	@Before
-	public void setConnObj() throws IOException {
+	public void setConnObj() throws IOException, InterruptedException {
 		forexPro.setConnObj(ForexPro.BASE_URL);
 	}
 
@@ -100,7 +100,7 @@ public class ForexProTest {
 	}
 
 	@Test
-	public void testGetMoreDetailsByEventId() throws IOException {
+	public void testGetMoreDetailsByEventId() throws IOException, InterruptedException {
 		EdIndicator moreDetailsAboutEdIndicator = forexPro
 				.getMoreDetailsByEventId(new EdIndicator(), EVENT_ID);
 		EdIndicator expectedEdIndicator = new EdIndicator();
@@ -110,14 +110,14 @@ public class ForexProTest {
 	}
 
 	@Test
-	public void testGetHistoricalDetailsByEventId() throws IOException {
+	public void testGetHistoricalDetailsByEventId() throws IOException, InterruptedException {
 		Set<EdHistory> edHistories = forexPro.getHistoricalDetailsByEventId(
 				new EdIndicator(), EVENT_ID);
 		assertEquals(50, edHistories.size());
 	}
 
 	@Test
-	public void testGetEconomicIndicatorsForSingleDay() throws IOException {
+	public void testGetEconomicIndicatorsForSingleDay() throws IOException, InterruptedException {
 
 		LocalDate day = new LocalDate(2011, 2, 6);
 
@@ -131,7 +131,7 @@ public class ForexProTest {
 
 	// http://www.forexpros.com/common/economicCalendar/economicCalendar.data.php?action=filter&elemntsValues=dateFrom%3D2012-04-08%2CdateTo%3D2012-04-08%2Ccurrency%3D29%2Ccurrency%3D25%2Ccurrency%3D54%2Ccurrency%3D145%2Ccurrency%3D34%2Ccurrency%3D32%2Ccurrency%3D70%2Ccurrency%3D6%2Ccurrency%3D27%2Ccurrency%3D37%2Ccurrency%3D122%2Ccurrency%3D113%2Ccurrency%3D55%2Ccurrency%3D24%2Ccurrency%3D59%2Ccurrency%3D72%2Ccurrency%3D71%2Ccurrency%3D22%2Ccurrency%3D17%2Ccurrency%3D51%2Ccurrency%3D39%2Ccurrency%3D93%2Ccurrency%3D14%2Ccurrency%3D48%2Ccurrency%3D33%2Ccurrency%3D23%2Ccurrency%3D10%2Ccurrency%3D35%2Ccurrency%3D92%2Ccurrency%3D68%2Ccurrency%3D42%2Ccurrency%3D7%2Ccurrency%3D105%2Ccurrency%3D21%2Ccurrency%3D43%2Ccurrency%3D60%2Ccurrency%3D87%2Ccurrency%3D125%2Ccurrency%3D45%2Ccurrency%3D53%2Ccurrency%3D38%2Ccurrency%3D56%2Ccurrency%3D52%2Ccurrency%3D36%2Ccurrency%3D110%2Ccurrency%3D11%2Ccurrency%3D26%2Ccurrency%3D9%2Ccurrency%3D12%2Ccurrency%3D46%2Ccurrency%3D41%2Ccurrency%3D202%2Ccurrency%3D63%2Ccurrency%3D61%2Ccurrency%3D143%2Ccurrency%3D4%2Ccurrency%3D5%2Ccurrency%3D138%2Ccurrency%3D178%2CtimeZone%3D55%2Cdst%3Doff&timeFrame=weekly
 	@Test
-	public void testEdIndicatorValuesByDate() throws IOException {
+	public void testEdIndicatorValuesByDate() throws IOException, InterruptedException {
 		LocalDate releaseDate = new LocalDate(2012, 4, 8);
 
 		EdIndicator adjCurrentAccount = new EdIndicator();
@@ -150,7 +150,7 @@ public class ForexProTest {
 	}
 
 	@Test
-	public void testGetEdHolidaysForASingleDay() throws IOException {
+	public void testGetEdHolidaysForASingleDay() throws IOException, InterruptedException {
 		LocalDate day = new LocalDate(2011, 04, 26,
 				GregorianChronology.getInstanceUTC());
 		List<EdHoliday> edHolidays = forexPro.getEdHolidaysForASingleDay(day);
@@ -159,7 +159,7 @@ public class ForexProTest {
 	}
 
 	@Test
-	public void testPopulateIndicatorValuesForLatestData() throws IOException {
+	public void testPopulateIndicatorValuesForLatestData() throws IOException, InterruptedException {
 
 		EdIndicator sthKoreanPPI = new EdIndicator();
 		sthKoreanPPI.setName("South Korean PPI (MoM)");

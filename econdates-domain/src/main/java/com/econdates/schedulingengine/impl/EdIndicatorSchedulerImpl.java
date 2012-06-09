@@ -95,7 +95,8 @@ public class EdIndicatorSchedulerImpl implements EdIndicatorScheduler,
 		JobDetail job = new JobDetail();
 		job.setJobClass(ForexProJob.class);
 
-		job.setName(toBeScheduled.getEdIndicator().getName() + ";"
+		job.setName(EdIndicatorSchedulerImpl.class.getName() + ";"
+				+ toBeScheduled.getEdIndicator().getName() + ";"
 				+ toBeScheduled.getReleaseDate());
 		Map dataMap = job.getJobDataMap();
 		dataMap.put("edScheduled", toBeScheduled);

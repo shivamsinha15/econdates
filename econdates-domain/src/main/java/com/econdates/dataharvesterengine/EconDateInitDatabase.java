@@ -10,25 +10,24 @@ import com.econdates.domain.entities.EdHistory;
 public interface EconDateInitDatabase {
 
 	void initCountryData();
-	
+
 	void initEuroZoneAsCountry();
-	
+
 	void initRegionData();
-	
+
 	void initCityData();
 
-	void initIndicatorAndHistoryData(LocalDate startDate, LocalDate endDate) throws IOException;
+	void initIndicatorAndHistoryData(LocalDate startDate, LocalDate endDate)
+			throws IOException, InterruptedException;
 
 	void initHolidayData(LocalDate startDate, LocalDate endDate)
-			throws IOException;
-	
+			throws IOException, InterruptedException;
+
 	void validateAndPersistHistoricalData(Set<EdHistory> edHistories);
 
 	boolean isCountryDataInit();
 
 	boolean isRegionDataInit();
-
-	void setUpExampleAIGEdIndicator();
 
 	boolean isEuroZoneAsCountryDataInit();
 

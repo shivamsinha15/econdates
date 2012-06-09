@@ -7,8 +7,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import com.econdates.domain.entities.EdIndicatorValue;
 import com.econdates.domain.entities.EdScheduled;
 import com.econdates.domain.factory.EdIndicatorValueFactory;
 import com.econdates.domain.persistance.EdIndicatorValueDAO;
+import com.econdates.util.DateUtil;
 import com.google.common.base.Strings;
 
 @Repository
@@ -30,7 +29,6 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 	@Autowired
 	EdIndicatorValueFactory edIndicatorValueFactoryImpl;
 
-	DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EdIndicatorValueDAOImpl.class);
 
@@ -56,7 +54,23 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 		StringBuilder findByEdIndiValue = new StringBuilder();
 		findByEdIndiValue.append("from " + getEntityBeanType().getName());
 		findByEdIndiValue.append(" e WHERE e.releaseDate ='"
-				+ date.toString(fmt) + "'");
+				+ date.toString(DateUtil.fmt) + "'");
+
+		return (List<EdIndicatorValue>) entityManager.createQuery(
+				findByEdIndiValue.toString()).getResultList();
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<EdIndicatorValue> findByGreaterThanOrEqualToDateValue(LocalDate date,
+			Class<? extends EdIndicatorValue> typeOfEdIndicatorValue) {
+
+		setEdIndicatorValueEntityToBeQueried(typeOfEdIndicatorValue);
+
+		StringBuilder findByEdIndiValue = new StringBuilder();
+		findByEdIndiValue.append("from " + getEntityBeanType().getName());
+		findByEdIndiValue.append(" e WHERE e.releaseDate >='"
+				+ date.toString(DateUtil.fmt) + "'");
 
 		return (List<EdIndicatorValue>) entityManager.createQuery(
 				findByEdIndiValue.toString()).getResultList();
@@ -89,7 +103,6 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 		EdHistory newEdHistory = edIndicatorValueFactoryImpl
 				.convertEdScheduledToEdHistory(fromEdScheduled);
 		delete(fromEdScheduled);
-		entityManager.flush();
 
 		EdIndicatorValue edIndicatorValueToBeCopied = findByEdIndicatorValue(
 				fromEdScheduled, toEdIndicatorValue);
@@ -129,7 +142,7 @@ public class EdIndicatorValueDAOImpl extends GenericEjb3DAO<EdIndicatorValue>
 		}
 
 		findByEdIndiValue.append(" AND e.releaseDate ='"
-				+ edIndicatorValue.getReleaseDate().toString(fmt) + "'");
+				+ edIndicatorValue.getReleaseDate().toString(DateUtil.fmt) + "'");
 
 		LOG.info(findByEdIndiValue.toString());
 		return findByEdIndiValue.toString();

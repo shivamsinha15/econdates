@@ -6,9 +6,6 @@ import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.econdates.domain.persistance.GenericDAO;
 
 public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
@@ -69,7 +66,6 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	 * relationship to Y has been annotated with the cascade element value
 	 * cascade=PERSIST or cascade=ALL, the persist operation is applied to Y.
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void persistCollection(Collection<T> entities) {
 		for (T t : entities) {
 			System.out.println("Persisting: " + t.toString());
@@ -78,11 +74,8 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 
 	}
 
-	// @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	// entityManager.flush();
 	public void persist(T t) {
 		entityManager.persist(t);
-		entityManager.flush();
 	}
 
 	/**
@@ -102,7 +95,6 @@ public abstract class GenericEjb3DAO<T> implements GenericDAO<T> {
 	 * someField is updated (the changes were made to e2, not e)
 	 * 
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void mergeCollection(Collection<T> entities) {
 		for (T t : entities) {
 			System.out.println("Merging: " + t.toString());

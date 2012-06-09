@@ -1,9 +1,8 @@
 package org.jboss.spring.samples.orders.domain.ejb;
 
-import org.jboss.spring.samples.orders.domain.repository.UserRepository;
-import org.jboss.spring.samples.orders.domain.entities.User;
-
 import javax.ejb.Local;
+
+import org.jboss.spring.samples.orders.domain.entities.User;
 
 /**
  * @author: marius

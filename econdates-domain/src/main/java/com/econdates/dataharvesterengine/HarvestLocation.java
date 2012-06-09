@@ -14,7 +14,7 @@ import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdScheduled;
 
 public interface HarvestLocation {
-	void setConnObj(String Url) throws IOException;
+	void setConnObj(String Url) throws IOException, InterruptedException;
 
 	Response getResponse() throws IOException;
 
@@ -25,19 +25,19 @@ public interface HarvestLocation {
 	boolean isValidEconomicDocument(Document doc);
 
 	List<EdIndicator> getEconomicIndicatorsForSingleDay(LocalDate dateOnly)
-			throws IOException;
+			throws IOException, InterruptedException;
 
 	EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator, String eventId)
-			throws IOException;
+			throws IOException, InterruptedException;
 
 	Set<EdHistory> getHistoricalDetailsByEventId(EdIndicator edIndicator,
-			String eventId) throws IOException;
+			String eventId) throws IOException, InterruptedException;
 
 	List<EdHoliday> getEdHolidaysForASingleDay(LocalDate dateOnly)
-			throws IOException;
+			throws IOException, InterruptedException;
 
 	void populateIndicatorValuesForLatestData(EdScheduled toBeReleasedData)
-			throws IOException;
+			throws IOException, InterruptedException;
 
 	void setAttachHistoricalDataToIndicators(
 			boolean attachHistoricalDataToIndicators);
@@ -45,6 +45,8 @@ public interface HarvestLocation {
 	void setAttachMoreDetailsToIndicators(boolean attachMoreDetailsToIndicators);
 	
 	EdHistory getEdIndicatorValuesByDate(EdIndicator edIndicator,
-			LocalDate releaseDate) throws IOException;
+			LocalDate releaseDate) throws IOException, InterruptedException;
+	
+	String test();
 
 }

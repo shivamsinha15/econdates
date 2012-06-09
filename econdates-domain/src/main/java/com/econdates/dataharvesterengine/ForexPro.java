@@ -33,6 +33,7 @@ import com.econdates.domain.entities.EdScheduled;
 import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.econdates.domain.persistance.EdIndicatorValueDAO;
+import com.econdates.util.DateUtil;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 
@@ -109,8 +110,8 @@ public class ForexPro implements HarvestLocation {
 		return isValidDocument;
 	}
 
-	public void populateIndicatorValuesForLatestData(EdScheduled toBeReleasedData)
-			throws IOException {
+	public void populateIndicatorValuesForLatestData(
+			EdScheduled toBeReleasedData) throws IOException, InterruptedException {
 		setAttachHistoricalDataToIndicators(false);
 		this.attachMoreDetailsToIndicators = false;
 		List<EdIndicator> releaseDateIndicators = getEconomicIndicatorsForSingleDay(toBeReleasedData
@@ -135,7 +136,7 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	public EdHistory getEdIndicatorValuesByDate(EdIndicator edIndicator,
-			LocalDate releaseDate) throws IOException {
+			LocalDate releaseDate) throws IOException, InterruptedException {
 		List<EdIndicator> releaseDateIndicators = getEconomicIndicatorsForSingleDay(releaseDate);
 		EdHistory currentReleaseData = null;
 		for (EdIndicator releaseDateIndicator : releaseDateIndicators) {
@@ -149,10 +150,9 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	public List<EdIndicator> getEconomicIndicatorsForSingleDay(LocalDate day)
-			throws IOException {
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+			throws IOException, InterruptedException {
 		logger.info("Retriving economic indicators for the date: "
-				+ day.toString(fmt));
+				+ day.toString(DateUtil.fmt));
 
 		setConnObj(constructUrlStringToGetIndicatorsAParticularDay(day));
 		return parseDocumentToRetrieveIndicatorsForAParticularDay(
@@ -160,7 +160,7 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	public List<EdHoliday> getEdHolidaysForASingleDay(LocalDate day)
-			throws IOException {
+			throws IOException, InterruptedException {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		logger.info("Retriving holidays for the date: " + day.toString(fmt));
 
@@ -218,7 +218,7 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	private List<EdIndicator> parseDocumentToRetrieveIndicatorsForAParticularDay(
-			Document document, LocalDate day) throws IOException {
+			Document document, LocalDate day) throws IOException, InterruptedException {
 		Elements indicatorDetails = document.select("tr[id*=eventRowId]");
 
 		Iterator<Element> indicatorIterator = indicatorDetails.iterator();
@@ -340,7 +340,8 @@ public class ForexPro implements HarvestLocation {
 	}
 
 	public Set<EdHistory> getHistoricalDetailsByEventId(
-			EdIndicator edIndicator, String eventId) throws IOException {
+			EdIndicator edIndicator, String eventId) throws IOException,
+			InterruptedException {
 		setConnObj(constructUrlForEventHistoricalData(eventId));
 		Document moreEventHistoricalDetailsDoc = getConnObj().get();
 
@@ -425,8 +426,12 @@ public class ForexPro implements HarvestLocation {
 		return releaseDate.toLocalDate();
 	}
 
+	public String test() {
+		return "do nothing";
+	}
+
 	public EdIndicator getMoreDetailsByEventId(EdIndicator edIndicator,
-			String eventId) throws IOException {
+			String eventId) throws IOException, InterruptedException {
 		setConnObj(constructUrlForMoreEventDetails(eventId));
 		Document moreEventDetailsDoc = getConnObj().get();
 		Elements eventDetails = moreEventDetailsDoc
@@ -511,7 +516,8 @@ public class ForexPro implements HarvestLocation {
 		return connObj;
 	}
 
-	public void setConnObj(String Url) throws IOException {
+	public void setConnObj(String Url) throws IOException, InterruptedException {
+		Thread.sleep(2000); // Used to buffer
 		this.connObj = Jsoup
 				.connect(Url)
 				.userAgent(

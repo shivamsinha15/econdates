@@ -80,24 +80,29 @@ public class ImportStaticDataImpl implements ImportStaticData {
 		for (int row = 1; row <= TOTAL_COUNTRIES; row++) {
 			EdCountry edCountry = new EdCountry();
 
-			edCountry.setId(Integer.parseInt(edCountryDataSheet.getCell(
-					COUNTRY_COL_ID, row).getContents().trim()));
-			edCountry.setCountryName(edCountryDataSheet.getCell(
-					COUNTRY_COL_NAME, row).getContents().trim());
-			edCountry.setCapital(edCountryDataSheet.getCell(
-					COUNTRY_COL_CAPITAL, row).getContents().trim());
-			edCountry.setCurrencyName(edCountryDataSheet.getCell(
-					COUNTRY_COL_CURRENCY_NAME, row).getContents().trim());
-			edCountry.setCurrencyCode(edCountryDataSheet.getCell(
-					COUNTRY_COL_CURRENCY_CODE, row).getContents().trim());
-			edCountry.setMobileExtension(edCountryDataSheet.getCell(
-					COUNTRY_COL_MOBILE_EXT, row).getContents().trim());
-			edCountry.setMapReference(edCountryDataSheet.getCell(
-					COUNTRY_COL_MAP_REFERENCE, row).getContents().trim());
-			edCountry.setNationalitySingular(edCountryDataSheet.getCell(
-					COUNTRY_COL_NATIONALITY_SINGULAR, row).getContents().trim());
-			edCountry.setNationalityPlural(edCountryDataSheet.getCell(
-					COUNTRY_COL_NATIONALITY_PLURAL, row).getContents().trim());
+			edCountry.setId(Integer.parseInt(edCountryDataSheet
+					.getCell(COUNTRY_COL_ID, row).getContents().trim()));
+			edCountry.setCountryName(edCountryDataSheet
+					.getCell(COUNTRY_COL_NAME, row).getContents().trim());
+			edCountry.setCapital(edCountryDataSheet
+					.getCell(COUNTRY_COL_CAPITAL, row).getContents().trim());
+			edCountry.setCurrencyName(edCountryDataSheet
+					.getCell(COUNTRY_COL_CURRENCY_NAME, row).getContents()
+					.trim());
+			edCountry.setCurrencyCode(edCountryDataSheet
+					.getCell(COUNTRY_COL_CURRENCY_CODE, row).getContents()
+					.trim());
+			edCountry.setMobileExtension(edCountryDataSheet
+					.getCell(COUNTRY_COL_MOBILE_EXT, row).getContents().trim());
+			edCountry.setMapReference(edCountryDataSheet
+					.getCell(COUNTRY_COL_MAP_REFERENCE, row).getContents()
+					.trim());
+			edCountry.setNationalitySingular(edCountryDataSheet
+					.getCell(COUNTRY_COL_NATIONALITY_SINGULAR, row)
+					.getContents().trim());
+			edCountry.setNationalityPlural(edCountryDataSheet
+					.getCell(COUNTRY_COL_NATIONALITY_PLURAL, row).getContents()
+					.trim());
 			edCountry.setFips(edCountryDataSheet.getCell(COUNTRY_COL_FIPS_104,
 					row).getContents());
 			edCountry.setIso2(edCountryDataSheet
@@ -117,17 +122,17 @@ public class ImportStaticDataImpl implements ImportStaticData {
 
 		for (int row = 1; row <= TOTAL_REGIONS; row++) {
 			EdRegion edRegion = new EdRegion();
-			edRegion.setId(Long.parseLong(edRegionDataSheet.getCell(
-					REGION_COL_ID, row).getContents().trim()));
-			edRegion.setCountryId(Integer.parseInt(edRegionDataSheet.getCell(
-					REGION_COUNTRY_ID, row).getContents().trim()));
+			edRegion.setId(Long.parseLong(edRegionDataSheet
+					.getCell(REGION_COL_ID, row).getContents().trim()));
+			edRegion.setCountryId(Integer.parseInt(edRegionDataSheet
+					.getCell(REGION_COUNTRY_ID, row).getContents().trim()));
 			edRegion.setName(edRegionDataSheet.getCell(REGION_NAME, row)
 					.getContents().trim());
 			edRegion.setCode(edRegionDataSheet.getCell(REGION_CODE, row)
 					.getContents().trim());
 			edRegions.add(edRegion);
 		}
-		return edRegions; //.subList(5, 7);
+		return edRegions; // .subList(5, 7);
 	}
 
 	public List<EdCity> getCities() {
@@ -140,10 +145,10 @@ public class ImportStaticDataImpl implements ImportStaticData {
 
 			edCity.setId(Long.parseLong(edCityDataSheet.getCell(CITY_ID, row)
 					.getContents().trim()));
-			edCity.setCountryId(Long.parseLong(edCityDataSheet.getCell(
-					CITY_COUNTRY_ID, row).getContents().trim()));
-			edCity.setRegionID(Long.parseLong(edCityDataSheet.getCell(
-					CITY_REGION_ID, row).getContents().trim()));
+			edCity.setCountryId(Long.parseLong(edCityDataSheet
+					.getCell(CITY_COUNTRY_ID, row).getContents().trim()));
+			edCity.setRegionID(Long.parseLong(edCityDataSheet
+					.getCell(CITY_REGION_ID, row).getContents().trim()));
 			edCity.setName(edCityDataSheet.getCell(CITY_NAME, row)
 					.getContents().trim());
 			edCity.setLatitude(edCityDataSheet.getCell(CITY_LATITUDE, row)

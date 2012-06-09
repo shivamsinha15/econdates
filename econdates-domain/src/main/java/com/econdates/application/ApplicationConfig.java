@@ -1,8 +1,5 @@
 package com.econdates.application;
 
-import javax.xml.ws.WebServiceClient;
-
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 //<context:component-scan base-package="org.jboss.spring.samples.orders.domain"/>
 
@@ -17,18 +14,18 @@ public class ApplicationConfig {
 	// </bean>
 
 //	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory
-				.setPersistenceXmlLocation("META-INF/jpa-persistence.xml");
-		return entityManagerFactory;
+//	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+//		final LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+//		entityManagerFactory
+//				.setPersistenceXmlLocation("META-INF/jpa-persistence.xml");
+//		return entityManagerFactory;
 
-	}
+	//	}
 
 //	@Bean
-	public WebServiceClient getWebServiceClient() {
-		return null;
-
-	}
+//	public WebServiceClient getWebServiceClient() {
+//		return null;
+//
+//	}
 
 }

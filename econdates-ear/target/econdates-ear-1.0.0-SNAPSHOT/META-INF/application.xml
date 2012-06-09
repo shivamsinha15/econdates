@@ -9,7 +9,7 @@
   </module>
   <module>
     <web>
-      <web-uri>econdates-web-1.0.0-SNAPSHOT.war</web-uri>
+      <web-uri>econdates-web.war</web-uri>
       <context-root>/econdates</context-root>
     </web>
   </module>

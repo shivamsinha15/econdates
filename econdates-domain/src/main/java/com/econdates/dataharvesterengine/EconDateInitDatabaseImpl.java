@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import com.econdates.domain.entities.EdCountry;
 import com.econdates.domain.entities.EdHistory;
 import com.econdates.domain.entities.EdHoliday;
 import com.econdates.domain.entities.EdIndicator;
-import com.econdates.domain.entities.EdIndicator.Importance;
+import com.econdates.domain.entities.EdJob;
 import com.econdates.domain.entities.EdRegion;
 import com.econdates.domain.entities.EdScheduled;
 import com.econdates.domain.factory.EdIndicatorValueFactory;
@@ -29,6 +29,7 @@ import com.econdates.domain.persistance.EdCountryDAO;
 import com.econdates.domain.persistance.EdHolidayDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
 import com.econdates.domain.persistance.EdIndicatorValueDAO;
+import com.econdates.domain.persistance.EdJobDAO;
 import com.econdates.domain.persistance.EdRegionDAO;
 import com.google.common.base.Strings;
 
@@ -47,9 +48,6 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 			.getLogger(EconDateInitDatabaseImpl.class);
 
 	private static final int ONE_DAY = 1;
-	private static final long COUNTRY_ID = 14;
-	private static final String COUNTRY_NAME = "Australia";
-	private static final String NAME = "AIG Construction Index";
 
 	@Autowired
 	EdCountryDAO edCountryDAOImpl;
@@ -62,6 +60,9 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	@Autowired
 	EdIndicatorDAO edIndicatorDAOImpl;
+
+	@Autowired
+	EdJobDAO edJobDAOImpl;
 
 	@Autowired
 	EdIndicatorValueDAO edIndicatorValueDAOImpl;
@@ -79,7 +80,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	EdIndicatorValueFactory edIndValFactoryImpl;
 
 	public void initHolidayData(LocalDate startDate, LocalDate endDate)
-			throws IOException {
+			throws IOException, InterruptedException {
 		if (!isHolidayDataInit()) {
 			while (startDate.isAfter(endDate)) {
 
@@ -95,10 +96,15 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void initIndicatorAndHistoryData(LocalDate startDate,
-			LocalDate endDate) throws IOException {
+			LocalDate endDate) throws IOException, InterruptedException {
 		forexPro.setAttachHistoricalDataToIndicators(true);
 		forexPro.setAttachMoreDetailsToIndicators(true);
 		if (!isIndicatorAndHistoryDataInit()) {
+
+			EdJob edJob = new EdJob();
+			edJob.setName("Initialize ED db");
+			edJob.setScheduler("Manual Init");
+
 			while (startDate.isAfter(endDate)) {
 				// for a date get all the Indicators and the associated
 				// EdHistories
@@ -119,12 +125,16 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 					validateAndPersistHistoricalData(edIndicator
 							.getEdHistories());
 				}
+
+				edJob.setLastUpdated(new DateTime());
+				edJob.setReleaseDate(startDate);
+				edJob = edJobDAOImpl.saveOrUpdate(edJob);
+
 				startDate = startDate.minusDays(ONE_DAY);
 			}
 		}
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void validateAndPersistHistoricalData(Set<EdHistory> edHistories) {
 
 		EdHistory nextEdHistory;
@@ -252,7 +262,7 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 
 	public boolean isRegionDataInit() {
 		int regionsInDatabase = edRegionDAOImpl.findAll().size();
-		if (regionsInDatabase == ImportStaticData.TOTAL_COUNTRIES) {
+		if (regionsInDatabase == ImportStaticData.TOTAL_REGIONS) {
 			LOG.info("EdRegion table has been initialised with : "
 					+ regionsInDatabase + " regions");
 			setRegionDataInit(true);
@@ -275,21 +285,6 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 		return isCityDataInit;
 	}
 
-	public void setUpExampleAIGEdIndicator() {
-		EdIndicator aigIndicator = edIndicatorDAOImpl
-				.findByNameCountryAndImportance(NAME, COUNTRY_ID,
-						Importance.Low);
-
-		if (aigIndicator == null) {
-			EdIndicator edIndicator = new EdIndicator();
-			edIndicator.setName(NAME);
-			edIndicator.setEdCountry(edCountryDAOImpl.findByName(COUNTRY_NAME));
-			edIndicator.setImportance(Importance.Low);
-			edIndicator.setReleaseTime(new LocalTime().plusSeconds(20));
-			edIndicatorDAOImpl.saveOrUpdate(edIndicator);
-		}
-	}
-
 	private void setCityDataInit(boolean isCityDataInit) {
 		this.isCityDataInit = isCityDataInit;
 	}
@@ -308,6 +303,8 @@ public class EconDateInitDatabaseImpl implements EconDateInitDatabase {
 	}
 
 	public boolean isIndicatorAndHistoryDataInit() {
+		edIndicatorValueDAOImpl
+				.setEdIndicatorValueEntityToBeQueried(EdHistory.class);
 		if ((edIndicatorValueDAOImpl.getMaxEntity() != null)
 				&& (edIndicatorDAOImpl.getMaxEntity() != null)) {
 			setIndicatorAndHistoryDAOInit(true);
