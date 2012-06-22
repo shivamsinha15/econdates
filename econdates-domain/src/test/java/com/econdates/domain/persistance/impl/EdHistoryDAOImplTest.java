@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import com.econdates.domain.entities.EdIndicator;
 import com.econdates.domain.entities.EdIndicator.Importance;
 import com.econdates.domain.persistance.EdHistoryDAO;
 import com.econdates.domain.persistance.EdIndicatorDAO;
+import com.econdates.fixtures.EdIndicatorFixture;
 
 @ContextConfiguration(locations = { "classpath:application-testcontext.xml",
 		"classpath:test-infrastructure.xml" })
@@ -27,7 +29,7 @@ public class EdHistoryDAOImplTest {
 
 	private static final long COUNTRY_ID = 14;
 	private static final String NAME = "AIG Construction Index";
-	
+
 	private EdIndicator aigIndicator;
 	private EdHistory edHistory;
 	private EdHistory expectedEdHistory;
@@ -48,27 +50,25 @@ public class EdHistoryDAOImplTest {
 			econDateInitDbImpl.initCountryData();
 		}
 
-		aigIndicator = edIndicatorDAOImpl
-				.findByNameCountryAndImportance(NAME, COUNTRY_ID,
-						Importance.Low);
+		aigIndicator = edIndicatorDAOImpl.findByNameCountryAndImportance(NAME,
+				COUNTRY_ID, Importance.Low);
 
 		if (aigIndicator == null) {
-			econDateInitDbImpl.setUpExampleAIGEdIndicator();
+			EdIndicatorFixture.setsUpExampleAIGEdIndicator();
 		}
-		
+
 		expectedEdHistory = new EdHistory();
 		expectedEdHistory.setActual("40.2");
 		expectedEdHistory.setAnalysis(null);
 		expectedEdHistory.setConsensus(null);
 		expectedEdHistory.setPrevious("43.8");
-		
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
-		expectedEdHistory.setReleaseDate(new LocalDate(2011, 2, 6).toDate());
+
+		expectedEdHistory.setReleaseDate(new LocalDate(2011, 2, 6));
 		expectedEdHistory.setRevised(null);
 		expectedEdHistory.setEdIndicator(aigIndicator);
 
 		edHistory = edHistoryDAOImpl.findByEdHistory(expectedEdHistory);
-		if(edHistory==null){
+		if (edHistory == null) {
 			edHistoryDAOImpl.saveOrUpdate(expectedEdHistory);
 		}
 	}
@@ -76,24 +76,23 @@ public class EdHistoryDAOImplTest {
 	@Test
 	public void testFindByEdHistory() {
 		EdHistory actualEdHistory = edHistoryDAOImpl.findByEdHistory(edHistory);
-		assertEquals(actualEdHistory,expectedEdHistory);
+		assertEquals(actualEdHistory, expectedEdHistory);
 	}
-	
+
 	@Test
-	public void edHistoryEquals(){
-		
+	public void edHistoryEquals() {
+
 		EdHistory other = new EdHistory();
 		other.setActual("40.2");
 		other.setAnalysis(null);
 		other.setConsensus("");
 		other.setPrevious("43.8");
-		other.setReleaseDate(new DateTime(2011, 2, 6, 0, 0, 0).toDate());
+		other.setReleaseDate(new LocalDate(2011, 2, 6));
 		other.setRevised(null);
 		other.setEdIndicator(aigIndicator);
 
-		
-		assertEquals(expectedEdHistory,other);
-		
+		assertEquals(expectedEdHistory, other);
+
 	}
-	
+
 }
